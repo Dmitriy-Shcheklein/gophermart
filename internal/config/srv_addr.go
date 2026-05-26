@@ -30,7 +30,7 @@ func NewSrvAddr() *SrvAddr {
 
 func (a *SrvAddr) ApplyEnv() {
 	serverAddress, ok := os.LookupEnv("RUN_ADDRESS")
-	if !ok {
+	if !ok || serverAddress == "" {
 		return
 	}
 	if err := a.Set(serverAddress); err != nil {

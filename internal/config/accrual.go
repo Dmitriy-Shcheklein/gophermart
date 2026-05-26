@@ -17,11 +17,11 @@ func NewAccrual() *Accrual {
 }
 
 func (a *Accrual) ApplyEnv() {
-	dsn, ok := os.LookupEnv("ACCRUAL_SYSTEM_ADDRESS")
-	if !ok {
+	accrual, ok := os.LookupEnv("ACCRUAL_SYSTEM_ADDRESS")
+	if !ok || accrual == "" {
 		return
 	}
-	if err := a.Set(dsn); err != nil {
+	if err := a.Set(accrual); err != nil {
 		log.Fatalf("error while set ACCRUAL_SYSTEM_ADDRESS env: %s", err)
 	}
 }

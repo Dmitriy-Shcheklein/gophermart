@@ -20,7 +20,7 @@ func NewDSN() *DSN {
 
 func (a *DSN) ApplyEnv() {
 	dsn, ok := os.LookupEnv("DATABASE_URI")
-	if !ok {
+	if !ok || dsn == "" {
 		return
 	}
 	if err := a.Set(dsn); err != nil {
