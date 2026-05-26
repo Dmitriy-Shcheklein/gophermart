@@ -1,0 +1,57 @@
+package user
+
+import (
+	"context"
+	"time"
+
+	domainErrors "github.com/Dmitriy-Shcheklein/gophermart/internal/errors"
+	"github.com/Dmitriy-Shcheklein/gophermart/internal/models"
+	"github.com/golang-jwt/jwt/v4"
+	"golang.org/x/crypto/bcrypt"
+)
+
+type Claims struct {
+	UserID int
+	Login  string
+	jwt.RegisteredClaims
+}
+
+var tokenExp = time.Hour
+
+var SecretKey = []byte("secret_key")
+
+func (s *Service) Auth(ctx context.Context, login string, password string) (string, error) {
+	user, err := s.repository.GetUserByLogin(ctx, login)
+	if err != nil {
+		return "", err
+	}
+
+	if err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
+		return "", domainErrors.ErrInvalidAuthData
+	}
+
+	jwtString, err := BuildJWTString(*user)
+	if err != nil {
+		return "", err
+	}
+	return jwtString, nil
+}
+
+func BuildJWTString(user models.DbUser) (string, error) {
+	token := jwt.NewWithClaims(
+		jwt.SigningMethodHS256, Claims{
+			RegisteredClaims: jwt.RegisteredClaims{
+				ExpiresAt: jwt.NewNumericDate(time.Now().Add(tokenExp)),
+			},
+			UserID: user.ID,
+			Login:  user.Login,
+		},
+	)
+
+	tokenString, err := token.SignedString(SecretKey)
+	if err != nil {
+		return "", err
+	}
+
+	return tokenString, nil
+}

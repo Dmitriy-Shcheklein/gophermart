@@ -18,7 +18,7 @@ func (w gzipWriter) Write(b []byte) (int, error) {
 	return w.Writer.Write(b)
 }
 
-func WithGzip(h http.Handler) http.Handler {
+func (m *Middleware) WithGzip(h http.Handler) http.Handler {
 	return http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
 			isAcceptEncoding := strings.Contains(r.Header.Get("Accept-Encoding"), "gzip")
@@ -71,15 +71,15 @@ func WithGzip(h http.Handler) http.Handler {
 
 func decompressRequest(w http.ResponseWriter, r *http.Request) {
 	gzReader, err := gzip.NewReader(r.Body)
+	if err != nil {
+		http.Error(w, "error while read gzip", http.StatusBadRequest)
+		return
+	}
 	defer func() {
 		if err = gzReader.Close(); err != nil {
 			log.Printf("error while close gzip reader: %v\n", err)
 		}
 	}()
-	if err != nil {
-		http.Error(w, "error while read gzip", http.StatusBadRequest)
-		return
-	}
 
 	decompressed, err := io.ReadAll(gzReader)
 	if err != nil {
