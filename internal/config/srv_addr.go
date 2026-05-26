@@ -17,14 +17,7 @@ type SrvAddr struct {
 func NewSrvAddr() *SrvAddr {
 	port := 8080
 	srvAddr := &SrvAddr{Host: "localhost", Port: port}
-
-	if serverAddress := os.Getenv("RUN_ADDRESS"); serverAddress != "" {
-		if err := srvAddr.Set(serverAddress); err != nil {
-			log.Fatalf("error while set RUN_ADDRESS env: %s", err)
-		}
-	}
 	flag.Var(srvAddr, "a", "server address host:port")
-
 	return srvAddr
 }
 

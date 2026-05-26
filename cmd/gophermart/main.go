@@ -45,7 +45,7 @@ func main() {
 	router.Use(appMiddlewares.WithGzip)
 	// router.Use(appMiddlewares.Auth)
 
-	if err = bootstrap.RunMigration(cfg.DbDSN); err != nil {
+	if err = bootstrap.RunMigration(cfg.DbDsn()); err != nil {
 		log.Fatalf("error while run migrations: %v\n", err)
 	}
 	if err = bootstrap.Bootstrap(notifyCtx, cfg, router, &logger, appMiddlewares); err != nil {

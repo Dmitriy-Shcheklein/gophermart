@@ -10,10 +10,10 @@ import (
 var errConfig = errors.New("config init error")
 
 type Config struct {
-	Port              int
-	Host              string
-	DbDSN             string
-	AccrualSystemAddr string
+	port              int
+	host              string
+	dbDSN             string
+	accrualSystemAddr string
 }
 
 type DbDSN struct {
@@ -38,16 +38,21 @@ func New() (*Config, error) {
 	}
 
 	return &Config{
-		Host:              srvAddr.Host,
-		Port:              srvAddr.Port,
-		AccrualSystemAddr: accrual.Value,
+		host:              srvAddr.Host,
+		port:              srvAddr.Port,
+		accrualSystemAddr: accrual.Value,
+		dbDSN:             dsn.Value,
 	}, nil
 }
 
 func (c *Config) GetSrvAddr() string {
-	return c.Host + ":" + strconv.Itoa(c.Port)
+	return c.host + ":" + strconv.Itoa(c.port)
 }
 
 func (c *Config) DbDsn() string {
-	return c.DbDSN
+	return c.dbDSN
+}
+
+func (c *Config) GetAccrualSrvAddr() string {
+	return c.accrualSystemAddr
 }
