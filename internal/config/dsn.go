@@ -13,6 +13,11 @@ type DSN struct {
 func NewDSN() *DSN {
 	dsn := &DSN{}
 
+	if dbUri := os.Getenv("DATABASE_URI"); dbUri != "" {
+		if err := dsn.Set(dbUri); err != nil {
+			log.Fatalf("error while set DATABASE_URI env: %s", err)
+		}
+	}
 	flag.Var(dsn, "d", "Database uri")
 
 	return dsn
