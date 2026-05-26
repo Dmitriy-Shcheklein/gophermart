@@ -3,8 +3,10 @@ package user
 import (
 	"context"
 	"testing"
+	"time"
 
 	domainErrors "github.com/Dmitriy-Shcheklein/gophermart/internal/errors"
+	"github.com/Dmitriy-Shcheklein/gophermart/internal/models"
 	"github.com/jackc/pgx/v5"
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
@@ -16,6 +18,7 @@ func TestService_Register(t *testing.T) {
 	var (
 		mockRepository *MockRepository
 		logger         *zerolog.Logger
+		user           models.DbUser
 
 		service *Service
 	)
@@ -24,6 +27,7 @@ func TestService_Register(t *testing.T) {
 		mockRepository = NewMockRepository(t)
 		nopLogger := zerolog.Nop()
 		logger = &nopLogger
+		user = models.DbUser{ID: 1, Login: "login", Password: "pass", CreatedAt: time.Now()}
 
 		service, _ = New(logger, mockRepository)
 	}
@@ -38,11 +42,12 @@ func TestService_Register(t *testing.T) {
 						return hashed != "pass"
 					},
 				),
-			).Return(nil)
+			).Return(user, nil)
 
-			err := service.Register(context.Background(), "login", "pass")
+			jwt, err := service.Register(context.Background(), "login", "pass")
 
 			require.NoError(t, err)
+			assert.NotEmpty(t, jwt)
 		},
 	)
 
@@ -50,9 +55,9 @@ func TestService_Register(t *testing.T) {
 		"No rows error", func(t *testing.T) {
 			setup(t)
 
-			mockRepository.EXPECT().CreateUser(mock.Anything, mock.Anything, mock.Anything).Return(pgx.ErrNoRows)
+			mockRepository.EXPECT().CreateUser(mock.Anything, mock.Anything, mock.Anything).Return(user, pgx.ErrNoRows)
 
-			err := service.Register(context.Background(), "login", "pass")
+			_, err := service.Register(context.Background(), "login", "pass")
 
 			require.Error(t, err)
 			assert.Equal(t, domainErrors.ErrLoginDuplicate, err)
@@ -64,9 +69,9 @@ func TestService_Register(t *testing.T) {
 			setup(t)
 
 			testError := assert.AnError
-			mockRepository.EXPECT().CreateUser(mock.Anything, mock.Anything, mock.Anything).Return(testError)
+			mockRepository.EXPECT().CreateUser(mock.Anything, mock.Anything, mock.Anything).Return(user, testError)
 
-			err := service.Register(context.Background(), "login", "pass")
+			_, err := service.Register(context.Background(), "login", "pass")
 
 			require.Error(t, err)
 			assert.Equal(t, testError, err)

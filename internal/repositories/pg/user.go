@@ -10,18 +10,19 @@ const (
 	logContext = "userRepository"
 )
 
-func (r *Repository) CreateUser(ctx context.Context, login string, password string) error {
+func (r *Repository) CreateUser(ctx context.Context, login string, password string) (models.DbUser, error) {
 	const logCode = "CreateUser"
 	r.logger.Debug().Str("context", logContext).Str("code", logCode).Msg("Start")
-	query := "insert into users (login, password) values($1, $2)"
+	query := "insert into users (login, password) values($1, $2) returning id, login, password, created_at"
 
-	_, err := r.pool.Exec(ctx, query, login, password)
-	if err != nil {
+	var user models.DbUser
+	row := r.pool.QueryRow(ctx, query, login, password)
+	if err := row.Scan(&user.ID, &user.Login, &user.Password, &user.CreatedAt); err != nil {
 		r.logger.Error().Err(err).Str("context", logContext).Str("code", logCode).Msg("Error while register user")
-		return err
+		return models.DbUser{}, err
 	}
 	r.logger.Debug().Str("context", logContext).Str("code", logCode).Msg("Create user successful")
-	return nil
+	return user, nil
 }
 
 func (r *Repository) GetUserByLogin(ctx context.Context, login string) (*models.DbUser, error) {

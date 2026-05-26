@@ -39,20 +39,29 @@ func (_m *MockRepository) EXPECT() *MockRepository_Expecter {
 }
 
 // CreateUser provides a mock function for the type MockRepository
-func (_mock *MockRepository) CreateUser(ctx context.Context, login string, password string) error {
+func (_mock *MockRepository) CreateUser(ctx context.Context, login string, password string) (models.DbUser, error) {
 	ret := _mock.Called(ctx, login, password)
 
 	if len(ret) == 0 {
 		panic("no return value specified for CreateUser")
 	}
 
-	var r0 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, string, string) error); ok {
+	var r0 models.DbUser
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, string, string) (models.DbUser, error)); ok {
+		return returnFunc(ctx, login, password)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, string, string) models.DbUser); ok {
 		r0 = returnFunc(ctx, login, password)
 	} else {
-		r0 = ret.Error(0)
+		r0 = ret.Get(0).(models.DbUser)
 	}
-	return r0
+	if returnFunc, ok := ret.Get(1).(func(context.Context, string, string) error); ok {
+		r1 = returnFunc(ctx, login, password)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
 }
 
 // MockRepository_CreateUser_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateUser'
@@ -91,12 +100,12 @@ func (_c *MockRepository_CreateUser_Call) Run(run func(ctx context.Context, logi
 	return _c
 }
 
-func (_c *MockRepository_CreateUser_Call) Return(err error) *MockRepository_CreateUser_Call {
-	_c.Call.Return(err)
+func (_c *MockRepository_CreateUser_Call) Return(dbUser models.DbUser, err error) *MockRepository_CreateUser_Call {
+	_c.Call.Return(dbUser, err)
 	return _c
 }
 
-func (_c *MockRepository_CreateUser_Call) RunAndReturn(run func(ctx context.Context, login string, password string) error) *MockRepository_CreateUser_Call {
+func (_c *MockRepository_CreateUser_Call) RunAndReturn(run func(ctx context.Context, login string, password string) (models.DbUser, error)) *MockRepository_CreateUser_Call {
 	_c.Call.Return(run)
 	return _c
 }

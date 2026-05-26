@@ -38,11 +38,12 @@ func TestHandler_Register(t *testing.T) {
 		"Successfully", func(t *testing.T) {
 			setup(t)
 
-			mockService.EXPECT().Register(mock.Anything, "firstLogin", "pass").Return(nil)
+			mockService.EXPECT().Register(mock.Anything, "firstLogin", "pass").Return("token", nil)
 
 			handler.Register(w, r)
 
 			require.Equal(t, http.StatusOK, w.Code)
+			assert.Equal(t, "token", w.Header().Get("Authorization"))
 		},
 	)
 
@@ -94,7 +95,7 @@ func TestHandler_Register(t *testing.T) {
 
 			mockService.EXPECT().Register(
 				mock.Anything, mock.Anything, mock.Anything,
-			).Return(domainErrors.ErrLoginDuplicate)
+			).Return("", domainErrors.ErrLoginDuplicate)
 
 			handler.Register(w, r)
 
@@ -106,7 +107,7 @@ func TestHandler_Register(t *testing.T) {
 		"Internal error", func(t *testing.T) {
 			setup(t)
 
-			mockService.EXPECT().Register(mock.Anything, mock.Anything, mock.Anything).Return(assert.AnError)
+			mockService.EXPECT().Register(mock.Anything, mock.Anything, mock.Anything).Return("", assert.AnError)
 
 			handler.Register(w, r)
 

@@ -1,7 +1,6 @@
 package user
 
 import (
-	"context"
 	"encoding/json"
 	"errors"
 	"net/http"
@@ -24,7 +23,7 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, domainErrors.ValidateBodyErrMsg, http.StatusBadRequest)
 		return
 	}
-	err := h.service.Register(context.Background(), body.Login, body.Password)
+	jwt, err := h.service.Register(r.Context(), body.Login, body.Password)
 	if errors.Is(err, domainErrors.ErrLoginDuplicate) {
 		w.WriteHeader(http.StatusConflict)
 		return
@@ -35,5 +34,6 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.Header().Add("Authorization", jwt)
 	w.WriteHeader(http.StatusOK)
 }

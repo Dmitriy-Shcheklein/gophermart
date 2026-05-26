@@ -10,7 +10,7 @@ import (
 )
 
 type Service interface {
-	Register(ctx context.Context, login string, password string) error
+	Register(ctx context.Context, login string, password string) (string, error)
 	Auth(ctx context.Context, login string, password string) (string, error)
 }
 
