@@ -30,7 +30,7 @@ func (r *Repository) GetUserByLogin(ctx context.Context, login string) (*models.
 	query := "select id, login, password, created_at from users where login = $1"
 	row := r.pool.QueryRow(ctx, query, login)
 	var result models.DbUser
-	err := row.Scan(&result)
+	err := row.Scan(&result.ID, &result.Login, &result.Password, &result.CreatedAt)
 	if err != nil {
 		r.logger.Error().Err(err).Str("context", logContext).Str(
 			"code", logCode,
