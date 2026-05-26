@@ -1,4 +1,4 @@
-package user
+package order
 
 import (
 	"context"
@@ -7,12 +7,11 @@ import (
 	"github.com/Dmitriy-Shcheklein/gophermart/internal/errors"
 	"github.com/Dmitriy-Shcheklein/gophermart/internal/models"
 	"github.com/rs/zerolog"
-	"golang.org/x/crypto/bcrypt"
 )
 
 type Repository interface {
-	CreateUser(ctx context.Context, login string, password string) error
-	GetUserByLogin(ctx context.Context, login string) (*models.DbUser, error)
+	CreateOrder(ctx context.Context, userID int, orderNum string) error
+	GetOrderByNum(ctx context.Context, orderNum string) (models.DbOrder, error)
 }
 
 type Service struct {
@@ -28,9 +27,4 @@ func New(logger *zerolog.Logger, repository Repository) (*Service, error) {
 		return nil, fmt.Errorf("%w: repository", errors.ErrEmptyDep)
 	}
 	return &Service{logger: logger, repository: repository}, nil
-}
-
-func hashPassword(password string) (string, error) {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 10)
-	return string(bytes), err
 }

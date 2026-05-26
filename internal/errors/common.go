@@ -9,7 +9,10 @@ const (
 )
 
 var (
-	ErrEmptyDep        = errors.New("empty dependency")
-	ErrLoginDuplicate  = errors.New("login already exists")
-	ErrInvalidAuthData = errors.New("invalid auth data")
+	ErrEmptyDep                = errors.New("empty dependency")
+	ErrLoginDuplicate          = errors.New("login already exists")
+	ErrInvalidAuthData         = errors.New("invalid auth data")
+	ErrOrderAlreadyExists      = errors.New("order already exists")
+	ErrOrderBelongsAnotherUser = errors.New("order belongs to another user")
+	ErrOrderInvalidNumber      = errors.New("invalid order number")
 )

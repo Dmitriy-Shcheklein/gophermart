@@ -40,12 +40,12 @@ func main() {
 	router.Use(middleware.Recoverer)
 	router.Use(middleware.Timeout(routerTimeout))
 	router.Use(appMiddlewares.WithGzip)
-	//router.Use(appMiddlewares.Auth)
+	// router.Use(appMiddlewares.Auth)
 
 	if err = bootstrap.RunMigration(cfg.DbDSN); err != nil {
 		log.Fatalf("error while run migrations: %v\n", err)
 	}
-	if err = bootstrap.Bootstrap(notifyCtx, cfg, router, &logger); err != nil {
+	if err = bootstrap.Bootstrap(notifyCtx, cfg, router, &logger, appMiddlewares); err != nil {
 		log.Fatalf("error while bootstrap app: %v\n", err)
 	}
 

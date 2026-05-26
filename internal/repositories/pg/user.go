@@ -27,7 +27,7 @@ func (r *Repository) CreateUser(ctx context.Context, login string, password stri
 func (r *Repository) GetUserByLogin(ctx context.Context, login string) (*models.DbUser, error) {
 	const logCode = "GetUserByLogin"
 	r.logger.Debug().Str("context", logContext).Str("code", logCode).Msg("Start")
-	query := "select * from users where login = $1"
+	query := "select id, login, password, crfeated_at from users where login = $1"
 	row := r.pool.QueryRow(ctx, query, login)
 	var result models.DbUser
 	err := row.Scan(&result)
