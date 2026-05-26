@@ -12,6 +12,7 @@ import (
 type Repository interface {
 	CreateOrder(ctx context.Context, userID int, orderNum string) error
 	GetOrderByNum(ctx context.Context, orderNum string) (models.DbOrder, error)
+	GetByUserId(ctx context.Context, userID int) ([]models.DbOrder, error)
 }
 
 type Service struct {

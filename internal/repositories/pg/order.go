@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/Dmitriy-Shcheklein/gophermart/internal/models"
+	"github.com/jackc/pgx/v5"
 )
 
 func (r *Repository) CreateOrder(ctx context.Context, userID int, orderNum string) error {
@@ -24,4 +25,17 @@ func (r *Repository) GetOrderByNum(ctx context.Context, orderNum string) (models
 		return models.DbOrder{}, err
 	}
 	return result, nil
+}
+
+func (r *Repository) GetByUserId(ctx context.Context, userID int) ([]models.DbOrder, error) {
+	query := "select id, status, uploaded_at, accrual, number from orders where user_id = $1 order by uploaded_at desc"
+	rows, err := r.pool.Query(ctx, query, userID)
+	if err != nil {
+		return nil, err
+	}
+	orders, err := pgx.CollectRows(rows, pgx.RowToStructByNameLax[models.DbOrder])
+	if err != nil {
+		return nil, err
+	}
+	return orders, nil
 }

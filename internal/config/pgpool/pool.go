@@ -9,7 +9,7 @@ import (
 )
 
 type Pool struct {
-	pool *pgxpool.Pool
+	Pool *pgxpool.Pool
 }
 
 func NewPool(connString string) (*Pool, error) {
@@ -36,7 +36,7 @@ func NewPool(connString string) (*Pool, error) {
 	if err != nil {
 		return pool, err
 	}
-	pool.pool = newPool
+	pool.Pool = newPool
 
 	return pool, nil
 }

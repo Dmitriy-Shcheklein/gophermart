@@ -101,6 +101,74 @@ func (_c *MockRepository_CreateOrder_Call) RunAndReturn(run func(ctx context.Con
 	return _c
 }
 
+// GetByUserId provides a mock function for the type MockRepository
+func (_mock *MockRepository) GetByUserId(ctx context.Context, userID int) ([]models.DbOrder, error) {
+	ret := _mock.Called(ctx, userID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetByUserId")
+	}
+
+	var r0 []models.DbOrder
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, int) ([]models.DbOrder, error)); ok {
+		return returnFunc(ctx, userID)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, int) []models.DbOrder); ok {
+		r0 = returnFunc(ctx, userID)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]models.DbOrder)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, int) error); ok {
+		r1 = returnFunc(ctx, userID)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockRepository_GetByUserId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetByUserId'
+type MockRepository_GetByUserId_Call struct {
+	*mock.Call
+}
+
+// GetByUserId is a helper method to define mock.On call
+//   - ctx context.Context
+//   - userID int
+func (_e *MockRepository_Expecter) GetByUserId(ctx interface{}, userID interface{}) *MockRepository_GetByUserId_Call {
+	return &MockRepository_GetByUserId_Call{Call: _e.mock.On("GetByUserId", ctx, userID)}
+}
+
+func (_c *MockRepository_GetByUserId_Call) Run(run func(ctx context.Context, userID int)) *MockRepository_GetByUserId_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 int
+		if args[1] != nil {
+			arg1 = args[1].(int)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockRepository_GetByUserId_Call) Return(dbOrders []models.DbOrder, err error) *MockRepository_GetByUserId_Call {
+	_c.Call.Return(dbOrders, err)
+	return _c
+}
+
+func (_c *MockRepository_GetByUserId_Call) RunAndReturn(run func(ctx context.Context, userID int) ([]models.DbOrder, error)) *MockRepository_GetByUserId_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetOrderByNum provides a mock function for the type MockRepository
 func (_mock *MockRepository) GetOrderByNum(ctx context.Context, orderNum string) (models.DbOrder, error) {
 	ret := _mock.Called(ctx, orderNum)

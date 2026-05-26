@@ -7,6 +7,7 @@ package user
 import (
 	"context"
 
+	"github.com/Dmitriy-Shcheklein/gophermart/internal/models"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -35,6 +36,74 @@ type MockService_Expecter struct {
 
 func (_m *MockService) EXPECT() *MockService_Expecter {
 	return &MockService_Expecter{mock: &_m.Mock}
+}
+
+// GetList provides a mock function for the type MockService
+func (_mock *MockService) GetList(ctx context.Context, userID int) ([]models.RequestOrder, error) {
+	ret := _mock.Called(ctx, userID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetList")
+	}
+
+	var r0 []models.RequestOrder
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, int) ([]models.RequestOrder, error)); ok {
+		return returnFunc(ctx, userID)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, int) []models.RequestOrder); ok {
+		r0 = returnFunc(ctx, userID)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]models.RequestOrder)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, int) error); ok {
+		r1 = returnFunc(ctx, userID)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockService_GetList_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetList'
+type MockService_GetList_Call struct {
+	*mock.Call
+}
+
+// GetList is a helper method to define mock.On call
+//   - ctx context.Context
+//   - userID int
+func (_e *MockService_Expecter) GetList(ctx interface{}, userID interface{}) *MockService_GetList_Call {
+	return &MockService_GetList_Call{Call: _e.mock.On("GetList", ctx, userID)}
+}
+
+func (_c *MockService_GetList_Call) Run(run func(ctx context.Context, userID int)) *MockService_GetList_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 int
+		if args[1] != nil {
+			arg1 = args[1].(int)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockService_GetList_Call) Return(requestOrders []models.RequestOrder, err error) *MockService_GetList_Call {
+	_c.Call.Return(requestOrders, err)
+	return _c
+}
+
+func (_c *MockService_GetList_Call) RunAndReturn(run func(ctx context.Context, userID int) ([]models.RequestOrder, error)) *MockService_GetList_Call {
+	_c.Call.Return(run)
+	return _c
 }
 
 // Upload provides a mock function for the type MockService

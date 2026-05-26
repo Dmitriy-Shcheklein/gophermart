@@ -5,12 +5,14 @@ import (
 	"fmt"
 
 	"github.com/Dmitriy-Shcheklein/gophermart/internal/errors"
+	"github.com/Dmitriy-Shcheklein/gophermart/internal/models"
 	"github.com/go-playground/validator/v10"
 	"github.com/rs/zerolog"
 )
 
 type Service interface {
 	Upload(ctx context.Context, userID int, orderNum string) error
+	GetList(ctx context.Context, userID int) ([]models.RequestOrder, error)
 }
 
 type AuthService interface {

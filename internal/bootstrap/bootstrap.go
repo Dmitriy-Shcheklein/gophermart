@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/Dmitriy-Shcheklein/gophermart/internal/config"
+	"github.com/Dmitriy-Shcheklein/gophermart/internal/config/pgpool"
 	orderHandler "github.com/Dmitriy-Shcheklein/gophermart/internal/handlers/order"
 	userHandler "github.com/Dmitriy-Shcheklein/gophermart/internal/handlers/user"
 	"github.com/Dmitriy-Shcheklein/gophermart/internal/middlewares"
@@ -12,18 +13,17 @@ import (
 	userSvc "github.com/Dmitriy-Shcheklein/gophermart/internal/services/user"
 	"github.com/go-chi/chi/v5"
 
-	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/rs/zerolog"
 )
 
 func Bootstrap(
-	ctx context.Context, cfg *config.Config, router *chi.Mux, logger *zerolog.Logger, mw *middlewares.Middleware,
+	_ context.Context, cfg *config.Config, router *chi.Mux, logger *zerolog.Logger, mw *middlewares.Middleware,
 ) error {
-	pool, err := pgxpool.New(ctx, cfg.DbDSN)
+	pool, err := pgpool.NewPool(cfg.DbDSN)
 	if err != nil {
 		return err
 	}
-	repository, err := pg.New(logger, pool)
+	repository, err := pg.New(logger, pool.Pool)
 	if err != nil {
 		return err
 	}
@@ -46,11 +46,11 @@ func Bootstrap(
 	}
 	router.Post("/api/user/register", uHandler.Register)
 	router.Post("/api/user/login", uHandler.Auth)
-
 	router.Route(
 		"/api/user/orders", func(r chi.Router) {
 			r.Use(mw.Auth)
 			r.Post("/", oHandler.Upload)
+			r.Get("/", oHandler.GetList)
 		},
 	)
 
