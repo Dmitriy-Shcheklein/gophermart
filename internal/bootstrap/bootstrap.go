@@ -19,7 +19,7 @@ import (
 func Bootstrap(
 	_ context.Context, cfg *config.Config, router *chi.Mux, logger *zerolog.Logger, mw *middlewares.Middleware,
 ) error {
-	pool, err := pgpool.NewPool(cfg.DbDSN)
+	pool, err := pgpool.NewPool(cfg.DbDsn())
 	if err != nil {
 		return err
 	}

@@ -27,6 +27,9 @@ func main() {
 		log.Fatalf("error while getting config: %v\n", err)
 	}
 	logger := zerolog.New(os.Stdout).Level(zerolog.DebugLevel)
+
+	logger.Info().Str("serverAddress", cfg.GetSrvAddr()).Str("DSN", cfg.DbDsn()).Msg("config data")
+
 	appMiddlewares, err := middlewares.New(&logger)
 	if err != nil {
 		log.Fatalf("error while create appMiddlewares: %v\n", err)
