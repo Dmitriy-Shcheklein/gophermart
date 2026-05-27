@@ -45,9 +45,9 @@ func verifyToken(r *http.Request, jwtToken string) (*http.Request, error) {
 		return r, fmt.Errorf("%w: invalid token format", errInvalidUserFormat)
 	}
 
-	claims := &Claims{}
+	claims := Claims{}
 	if _, err := jwt.ParseWithClaims(
-		jwtToken, claims, func(t *jwt.Token) (interface{}, error) {
+		jwtToken, &claims, func(t *jwt.Token) (interface{}, error) {
 			return secretKey, nil
 		},
 	); err != nil {
