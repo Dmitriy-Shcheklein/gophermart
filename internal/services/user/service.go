@@ -11,7 +11,7 @@ import (
 )
 
 type Repository interface {
-	CreateUser(ctx context.Context, login string, password string) (models.DbUser, error)
+	CreateUser(ctx context.Context, login string, password string, balance models.DbBalance) (models.DbUser, error)
 	GetUserByLogin(ctx context.Context, login string) (*models.DbUser, error)
 }
 

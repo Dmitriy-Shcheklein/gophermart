@@ -41,7 +41,7 @@ func TestService_Register(t *testing.T) {
 					func(hashed string) bool {
 						return hashed != "pass"
 					},
-				),
+				), models.DbBalance{Withdrawn: 0, Current: 0},
 			).Return(user, nil)
 
 			jwt, err := service.Register(context.Background(), "login", "pass")
@@ -55,7 +55,9 @@ func TestService_Register(t *testing.T) {
 		"No rows error", func(t *testing.T) {
 			setup(t)
 
-			mockRepository.EXPECT().CreateUser(mock.Anything, mock.Anything, mock.Anything).Return(user, pgx.ErrNoRows)
+			mockRepository.EXPECT().CreateUser(mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(
+				user, pgx.ErrNoRows,
+			)
 
 			_, err := service.Register(context.Background(), "login", "pass")
 
@@ -69,7 +71,9 @@ func TestService_Register(t *testing.T) {
 			setup(t)
 
 			testError := assert.AnError
-			mockRepository.EXPECT().CreateUser(mock.Anything, mock.Anything, mock.Anything).Return(user, testError)
+			mockRepository.EXPECT().CreateUser(mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(
+				user, testError,
+			)
 
 			_, err := service.Register(context.Background(), "login", "pass")
 

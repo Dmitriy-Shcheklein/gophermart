@@ -48,7 +48,6 @@ func (r *Repository) Withdraw(ctx context.Context, balance models.DbBalance, wit
 	if err != nil {
 		return fmt.Errorf("failed to begin transaction: %w", err)
 	}
-
 	defer func() {
 		if err != nil {
 			if err = tx.Rollback(ctx); err != nil {
