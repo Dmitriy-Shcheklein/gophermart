@@ -84,10 +84,25 @@ func (r *Repository) GetUserBalance(ctx context.Context, userID int) (models.DbB
 	return result, nil
 }
 
-func (r *Repository) GetProcessingOrders(_ context.Context) ([]models.DbOrder, error) {
-	return nil, nil
+func (r *Repository) GetProcessingOrders(ctx context.Context) ([]models.DbOrder, error) {
+	query := "select id, status, uploaded_at, accrual, number from orders where status != 'INVALID' and status != 'PROCESSED'"
+	rows, err := r.pool.Query(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	orders, err := pgx.CollectRows(rows, pgx.RowToStructByNameLax[models.DbOrder])
+	if err != nil {
+		return nil, err
+	}
+	return orders, nil
 }
 
-func (r *Repository) UpdateOrder(_ context.Context, _ models.DbOrder) error {
+func (r *Repository) UpdateOrder(ctx context.Context, order models.DbOrder) error {
+	query := "update orders set status = $1, accrual = $2 where number = $3"
+
+	_, err := r.pool.Exec(ctx, query, order.Status, order.Accrual, order.Number)
+	if err != nil {
+		return err
+	}
 	return nil
 }

@@ -52,6 +52,7 @@ func (w *Worker) Start(ctx context.Context, timeout time.Duration) {
 	go w.handle(witchCancel)
 
 	w.isStarted.Store(true)
+	w.logger.Info().Msg("worker started")
 }
 
 func (w *Worker) Stop() {

@@ -9,6 +9,7 @@ import (
 
 func (s *Service) ProcessOrders(ctx context.Context) error {
 	orders, err := s.repository.GetProcessingOrders(ctx)
+	s.logger.Info().Int("count", len(orders)).Msg("Processing orders")
 	if err != nil {
 		return err
 	}
