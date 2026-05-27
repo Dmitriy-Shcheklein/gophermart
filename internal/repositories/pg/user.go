@@ -35,7 +35,7 @@ func (r *Repository) CreateUser(
 		r.logger.Error().Err(err).Str("context", logContext).Str("code", logCode).Msg("Error while register user")
 		return models.DbUser{}, err
 	}
-	balanceQuery := "insert into balances (current, withdraw, user_id) values ($1, $2, $3)"
+	balanceQuery := "insert into balances (current, withdrawn, user_id) values ($1, $2, $3)"
 	_, err = tx.Exec(ctx, balanceQuery, balance.Current, balance.Withdrawn, user.ID)
 	if err != nil {
 		return models.DbUser{}, err
