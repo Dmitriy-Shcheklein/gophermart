@@ -49,8 +49,8 @@ func TestService_GetOrder(t *testing.T) {
 			assert.Equal(
 				t, "1", result.Order,
 			)
-			assert.Equal(
-				t, models.ProcessedOrder, result.Status,
+			assert.EqualValues(
+				t, models.Processed, result.Status,
 			)
 			assert.EqualValues(
 				t, 100, *result.Accrual,
@@ -101,8 +101,8 @@ func TestService_GetOrder(t *testing.T) {
 			assert.Equal(
 				t, "1", result.Order,
 			)
-			assert.Equal(
-				t, models.InvalidOrder, result.Status,
+			assert.EqualValues(
+				t, models.Invalid, result.Status,
 			)
 			assert.Nil(
 				t, result.Accrual,

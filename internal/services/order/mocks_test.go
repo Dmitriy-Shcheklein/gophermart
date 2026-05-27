@@ -235,6 +235,68 @@ func (_c *MockRepository_GetOrderByNum_Call) RunAndReturn(run func(ctx context.C
 	return _c
 }
 
+// GetProcessingOrders provides a mock function for the type MockRepository
+func (_mock *MockRepository) GetProcessingOrders(ctx context.Context) ([]models.DbOrder, error) {
+	ret := _mock.Called(ctx)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetProcessingOrders")
+	}
+
+	var r0 []models.DbOrder
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context) ([]models.DbOrder, error)); ok {
+		return returnFunc(ctx)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context) []models.DbOrder); ok {
+		r0 = returnFunc(ctx)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]models.DbOrder)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context) error); ok {
+		r1 = returnFunc(ctx)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockRepository_GetProcessingOrders_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetProcessingOrders'
+type MockRepository_GetProcessingOrders_Call struct {
+	*mock.Call
+}
+
+// GetProcessingOrders is a helper method to define mock.On call
+//   - ctx context.Context
+func (_e *MockRepository_Expecter) GetProcessingOrders(ctx interface{}) *MockRepository_GetProcessingOrders_Call {
+	return &MockRepository_GetProcessingOrders_Call{Call: _e.mock.On("GetProcessingOrders", ctx)}
+}
+
+func (_c *MockRepository_GetProcessingOrders_Call) Run(run func(ctx context.Context)) *MockRepository_GetProcessingOrders_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		run(
+			arg0,
+		)
+	})
+	return _c
+}
+
+func (_c *MockRepository_GetProcessingOrders_Call) Return(dbOrders []models.DbOrder, err error) *MockRepository_GetProcessingOrders_Call {
+	_c.Call.Return(dbOrders, err)
+	return _c
+}
+
+func (_c *MockRepository_GetProcessingOrders_Call) RunAndReturn(run func(ctx context.Context) ([]models.DbOrder, error)) *MockRepository_GetProcessingOrders_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetUserBalance provides a mock function for the type MockRepository
 func (_mock *MockRepository) GetUserBalance(ctx context.Context, useID int) (models.DbBalance, error) {
 	ret := _mock.Called(ctx, useID)
@@ -297,6 +359,63 @@ func (_c *MockRepository_GetUserBalance_Call) Return(dbBalance models.DbBalance,
 }
 
 func (_c *MockRepository_GetUserBalance_Call) RunAndReturn(run func(ctx context.Context, useID int) (models.DbBalance, error)) *MockRepository_GetUserBalance_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdateOrder provides a mock function for the type MockRepository
+func (_mock *MockRepository) UpdateOrder(ctx context.Context, order models.DbOrder) error {
+	ret := _mock.Called(ctx, order)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateOrder")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, models.DbOrder) error); ok {
+		r0 = returnFunc(ctx, order)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockRepository_UpdateOrder_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateOrder'
+type MockRepository_UpdateOrder_Call struct {
+	*mock.Call
+}
+
+// UpdateOrder is a helper method to define mock.On call
+//   - ctx context.Context
+//   - order models.DbOrder
+func (_e *MockRepository_Expecter) UpdateOrder(ctx interface{}, order interface{}) *MockRepository_UpdateOrder_Call {
+	return &MockRepository_UpdateOrder_Call{Call: _e.mock.On("UpdateOrder", ctx, order)}
+}
+
+func (_c *MockRepository_UpdateOrder_Call) Run(run func(ctx context.Context, order models.DbOrder)) *MockRepository_UpdateOrder_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 models.DbOrder
+		if args[1] != nil {
+			arg1 = args[1].(models.DbOrder)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockRepository_UpdateOrder_Call) Return(err error) *MockRepository_UpdateOrder_Call {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockRepository_UpdateOrder_Call) RunAndReturn(run func(ctx context.Context, order models.DbOrder) error) *MockRepository_UpdateOrder_Call {
 	_c.Call.Return(run)
 	return _c
 }

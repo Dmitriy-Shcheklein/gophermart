@@ -37,7 +37,7 @@ func (_m *MockService) EXPECT() *MockService_Expecter {
 	return &MockService_Expecter{mock: &_m.Mock}
 }
 
-// UpdateOrders provides a mock function for the type MockService
+// ProcessOrders provides a mock function for the type MockService
 func (_mock *MockService) ProcessOrders(ctx context.Context) error {
 	ret := _mock.Called(ctx)
 
@@ -54,18 +54,18 @@ func (_mock *MockService) ProcessOrders(ctx context.Context) error {
 	return r0
 }
 
-// MockService_UpdateOrders_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ProcessOrders'
-type MockService_UpdateOrders_Call struct {
+// MockService_ProcessOrders_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ProcessOrders'
+type MockService_ProcessOrders_Call struct {
 	*mock.Call
 }
 
-// UpdateOrders is a helper method to define mock.On call
+// ProcessOrders is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockService_Expecter) UpdateOrders(ctx interface{}) *MockService_UpdateOrders_Call {
-	return &MockService_UpdateOrders_Call{Call: _e.mock.On("ProcessOrders", ctx)}
+func (_e *MockService_Expecter) ProcessOrders(ctx interface{}) *MockService_ProcessOrders_Call {
+	return &MockService_ProcessOrders_Call{Call: _e.mock.On("ProcessOrders", ctx)}
 }
 
-func (_c *MockService_UpdateOrders_Call) Run(run func(ctx context.Context)) *MockService_UpdateOrders_Call {
+func (_c *MockService_ProcessOrders_Call) Run(run func(ctx context.Context)) *MockService_ProcessOrders_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -78,12 +78,12 @@ func (_c *MockService_UpdateOrders_Call) Run(run func(ctx context.Context)) *Moc
 	return _c
 }
 
-func (_c *MockService_UpdateOrders_Call) Return(err error) *MockService_UpdateOrders_Call {
+func (_c *MockService_ProcessOrders_Call) Return(err error) *MockService_ProcessOrders_Call {
 	_c.Call.Return(err)
 	return _c
 }
 
-func (_c *MockService_UpdateOrders_Call) RunAndReturn(run func(ctx context.Context) error) *MockService_UpdateOrders_Call {
+func (_c *MockService_ProcessOrders_Call) RunAndReturn(run func(ctx context.Context) error) *MockService_ProcessOrders_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -41,7 +41,7 @@ func (s *Service) GetOrder(ctx context.Context, orderNum string) (models.Loyalty
 	}
 	if resp.StatusCode == http.StatusNoContent {
 		order.Order = orderNum
-		order.Status = models.InvalidOrder
+		order.Status = models.Invalid
 		return order, nil
 	}
 	if resp.StatusCode == http.StatusInternalServerError {

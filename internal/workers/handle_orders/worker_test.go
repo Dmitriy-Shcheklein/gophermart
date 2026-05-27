@@ -66,7 +66,7 @@ func TestWorker(t *testing.T) {
 			setup(t)
 			ctx, cancelFunc := context.WithCancel(context.Background())
 
-			mockService.EXPECT().UpdateOrders(mock.Anything).RunAndReturn(
+			mockService.EXPECT().ProcessOrders(mock.Anything).RunAndReturn(
 				func(_ context.Context) error {
 					cancelFunc()
 					return nil
@@ -91,7 +91,7 @@ func TestWorker(t *testing.T) {
 
 			ctx := context.Background()
 
-			mockService.EXPECT().UpdateOrders(mock.Anything).Return(nil)
+			mockService.EXPECT().ProcessOrders(mock.Anything).Return(nil)
 
 			worker.Start(ctx, time.Hour)
 
