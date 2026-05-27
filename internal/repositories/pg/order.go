@@ -2,6 +2,7 @@ package pg
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/Dmitriy-Shcheklein/gophermart/internal/models"
 	"github.com/jackc/pgx/v5"
@@ -40,4 +41,46 @@ func (r *Repository) GetByUserId(ctx context.Context, userID int) ([]models.DbOr
 		return nil, err
 	}
 	return orders, nil
+}
+
+func (r *Repository) Withdraw(ctx context.Context, balance models.DbBalance, withdraw models.DbWithdrawn) (err error) {
+	tx, err := r.pool.Begin(ctx)
+	if err != nil {
+		return fmt.Errorf("failed to begin transaction: %w", err)
+	}
+
+	defer func() {
+		if err != nil {
+			if err = tx.Rollback(ctx); err != nil {
+				r.logger.Error().Err(err).Msg("error while rollback transaction")
+			}
+		}
+	}()
+	balanceQuery := "update balances set current = $1, withdraw = $2 where user_id = $3"
+	_, err = tx.Exec(ctx, balanceQuery, balance.Current, balance.Withdrawn, balance.UserID)
+	if err != nil {
+		return err
+	}
+	withdrawQuery := "insert into withdraws (sum, order, user_id) values ($1, $2, $3)"
+	_, err = tx.Exec(ctx, withdrawQuery, withdraw.Sum, withdraw.Order, withdraw.UserID)
+	if err != nil {
+		return err
+	}
+	if err = tx.Commit(ctx); err != nil {
+		return fmt.Errorf("failed to commit transaction: %w", err)
+	}
+	return nil
+}
+
+func (r *Repository) GetUserBalance(ctx context.Context, userID int) (models.DbBalance, error) {
+	query := "select id, current, withdraw, user_id from balances where user_id = $1"
+
+	row := r.pool.QueryRow(ctx, query, userID)
+	var result models.DbBalance
+	if err := row.Scan(
+		&result.ID, &result.Current, &result.Withdrawn, &result.UserID,
+	); err != nil {
+		return models.DbBalance{}, err
+	}
+	return result, nil
 }

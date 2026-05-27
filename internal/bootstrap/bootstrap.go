@@ -44,6 +44,7 @@ func Bootstrap(
 	if err != nil {
 		return err
 	}
+
 	router.Post("/api/user/register", uHandler.Register)
 	router.Post("/api/user/login", uHandler.Auth)
 	router.Route(
@@ -51,6 +52,12 @@ func Bootstrap(
 			r.Use(mw.Auth)
 			r.Post("/", oHandler.Upload)
 			r.Get("/", oHandler.GetList)
+		},
+	)
+	router.Route(
+		"/api/user/balance", func(r chi.Router) {
+			r.Use(mw.Auth)
+			r.Post("/withdraw", oHandler.Withdraw)
 		},
 	)
 

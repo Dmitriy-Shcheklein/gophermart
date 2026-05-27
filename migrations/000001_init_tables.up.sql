@@ -19,3 +19,23 @@ create table if not exists orders
     );
 
 create unique index if not exists idx_orders_number on orders(number);
+
+create table if not exists balances
+(
+    id serial primary key,
+    current numeric(1000, 2) not null,
+    withdrawn numeric(1000, 2) not null,
+    user_id integer not null
+    );
+
+create unique index if not exists idx_balances_user_id on balances(user_id);
+
+create table if not exists withdrawns
+(
+    id serial primary key,
+    sum numeric(1000, 2) not null,
+    order varchar(255) not null,
+    user_id integer not null
+    );
+
+create index if not exists idx_withdrawns_user_id on withdrawns(user_id);

@@ -15,4 +15,5 @@ var (
 	ErrOrderAlreadyExists      = errors.New("order already exists")
 	ErrOrderBelongsAnotherUser = errors.New("order belongs to another user")
 	ErrOrderInvalidNumber      = errors.New("invalid order number")
+	ErrOrderNotEnoughBalance   = errors.New("not enough balanace")
 )

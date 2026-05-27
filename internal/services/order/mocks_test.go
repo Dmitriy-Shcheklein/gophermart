@@ -234,3 +234,132 @@ func (_c *MockRepository_GetOrderByNum_Call) RunAndReturn(run func(ctx context.C
 	_c.Call.Return(run)
 	return _c
 }
+
+// GetUserBalance provides a mock function for the type MockRepository
+func (_mock *MockRepository) GetUserBalance(ctx context.Context, useID int) (models.DbBalance, error) {
+	ret := _mock.Called(ctx, useID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetUserBalance")
+	}
+
+	var r0 models.DbBalance
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, int) (models.DbBalance, error)); ok {
+		return returnFunc(ctx, useID)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, int) models.DbBalance); ok {
+		r0 = returnFunc(ctx, useID)
+	} else {
+		r0 = ret.Get(0).(models.DbBalance)
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, int) error); ok {
+		r1 = returnFunc(ctx, useID)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockRepository_GetUserBalance_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetUserBalance'
+type MockRepository_GetUserBalance_Call struct {
+	*mock.Call
+}
+
+// GetUserBalance is a helper method to define mock.On call
+//   - ctx context.Context
+//   - useID int
+func (_e *MockRepository_Expecter) GetUserBalance(ctx interface{}, useID interface{}) *MockRepository_GetUserBalance_Call {
+	return &MockRepository_GetUserBalance_Call{Call: _e.mock.On("GetUserBalance", ctx, useID)}
+}
+
+func (_c *MockRepository_GetUserBalance_Call) Run(run func(ctx context.Context, useID int)) *MockRepository_GetUserBalance_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 int
+		if args[1] != nil {
+			arg1 = args[1].(int)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockRepository_GetUserBalance_Call) Return(dbBalance models.DbBalance, err error) *MockRepository_GetUserBalance_Call {
+	_c.Call.Return(dbBalance, err)
+	return _c
+}
+
+func (_c *MockRepository_GetUserBalance_Call) RunAndReturn(run func(ctx context.Context, useID int) (models.DbBalance, error)) *MockRepository_GetUserBalance_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// Withdraw provides a mock function for the type MockRepository
+func (_mock *MockRepository) Withdraw(ctx context.Context, balance models.DbBalance, withdrawn models.DbWithdrawn) error {
+	ret := _mock.Called(ctx, balance, withdrawn)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Withdraw")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, models.DbBalance, models.DbWithdrawn) error); ok {
+		r0 = returnFunc(ctx, balance, withdrawn)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockRepository_Withdraw_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Withdraw'
+type MockRepository_Withdraw_Call struct {
+	*mock.Call
+}
+
+// Withdraw is a helper method to define mock.On call
+//   - ctx context.Context
+//   - balance models.DbBalance
+//   - withdrawn models.DbWithdrawn
+func (_e *MockRepository_Expecter) Withdraw(ctx interface{}, balance interface{}, withdrawn interface{}) *MockRepository_Withdraw_Call {
+	return &MockRepository_Withdraw_Call{Call: _e.mock.On("Withdraw", ctx, balance, withdrawn)}
+}
+
+func (_c *MockRepository_Withdraw_Call) Run(run func(ctx context.Context, balance models.DbBalance, withdrawn models.DbWithdrawn)) *MockRepository_Withdraw_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 models.DbBalance
+		if args[1] != nil {
+			arg1 = args[1].(models.DbBalance)
+		}
+		var arg2 models.DbWithdrawn
+		if args[2] != nil {
+			arg2 = args[2].(models.DbWithdrawn)
+		}
+		run(
+			arg0,
+			arg1,
+			arg2,
+		)
+	})
+	return _c
+}
+
+func (_c *MockRepository_Withdraw_Call) Return(err error) *MockRepository_Withdraw_Call {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockRepository_Withdraw_Call) RunAndReturn(run func(ctx context.Context, balance models.DbBalance, withdrawn models.DbWithdrawn) error) *MockRepository_Withdraw_Call {
+	_c.Call.Return(run)
+	return _c
+}

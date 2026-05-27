@@ -5,16 +5,11 @@ import (
 	"fmt"
 
 	"github.com/Dmitriy-Shcheklein/gophermart/internal/errors"
-	"github.com/Dmitriy-Shcheklein/gophermart/internal/models"
 	"github.com/rs/zerolog"
 )
 
 type Repository interface {
-	CreateOrder(ctx context.Context, userID int, orderNum string) error
-	GetOrderByNum(ctx context.Context, orderNum string) (models.DbOrder, error)
-	GetByUserId(ctx context.Context, userID int) ([]models.DbOrder, error)
-	GetUserBalance(ctx context.Context, useID int) (models.DbBalance, error)
-	Withdraw(ctx context.Context, balance models.DbBalance, withdrawn models.DbWithdrawn) error
+	SetBalance(ctx context.Context, userID int, balance float64) error
 }
 
 type Service struct {

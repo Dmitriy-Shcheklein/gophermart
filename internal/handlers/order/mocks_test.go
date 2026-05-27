@@ -169,6 +169,75 @@ func (_c *MockService_Upload_Call) RunAndReturn(run func(ctx context.Context, us
 	return _c
 }
 
+// Withdraw provides a mock function for the type MockService
+func (_mock *MockService) Withdraw(ctx context.Context, userID int, sum float64, orderNum string) error {
+	ret := _mock.Called(ctx, userID, sum, orderNum)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Withdraw")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, int, float64, string) error); ok {
+		r0 = returnFunc(ctx, userID, sum, orderNum)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockService_Withdraw_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Withdraw'
+type MockService_Withdraw_Call struct {
+	*mock.Call
+}
+
+// Withdraw is a helper method to define mock.On call
+//   - ctx context.Context
+//   - userID int
+//   - sum float64
+//   - orderNum string
+func (_e *MockService_Expecter) Withdraw(ctx interface{}, userID interface{}, sum interface{}, orderNum interface{}) *MockService_Withdraw_Call {
+	return &MockService_Withdraw_Call{Call: _e.mock.On("Withdraw", ctx, userID, sum, orderNum)}
+}
+
+func (_c *MockService_Withdraw_Call) Run(run func(ctx context.Context, userID int, sum float64, orderNum string)) *MockService_Withdraw_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 int
+		if args[1] != nil {
+			arg1 = args[1].(int)
+		}
+		var arg2 float64
+		if args[2] != nil {
+			arg2 = args[2].(float64)
+		}
+		var arg3 string
+		if args[3] != nil {
+			arg3 = args[3].(string)
+		}
+		run(
+			arg0,
+			arg1,
+			arg2,
+			arg3,
+		)
+	})
+	return _c
+}
+
+func (_c *MockService_Withdraw_Call) Return(err error) *MockService_Withdraw_Call {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockService_Withdraw_Call) RunAndReturn(run func(ctx context.Context, userID int, sum float64, orderNum string) error) *MockService_Withdraw_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // NewMockAuthService creates a new instance of MockAuthService. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
 // The first argument is typically a *testing.T value.
 func NewMockAuthService(t interface {
