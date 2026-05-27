@@ -55,7 +55,7 @@ func (r *Repository) Withdraw(ctx context.Context, balance models.DbBalance, wit
 			}
 		}
 	}()
-	balanceQuery := "update balances set current = $1, withdraw = $2 where user_id = $3"
+	balanceQuery := "update balances set current = $1, withdrawn = $2 where user_id = $3"
 	_, err = tx.Exec(ctx, balanceQuery, balance.Current, balance.Withdrawn, balance.UserID)
 	if err != nil {
 		return err
@@ -72,7 +72,7 @@ func (r *Repository) Withdraw(ctx context.Context, balance models.DbBalance, wit
 }
 
 func (r *Repository) GetUserBalance(ctx context.Context, userID int) (models.DbBalance, error) {
-	query := "select id, current, withdraw, user_id from balances where user_id = $1"
+	query := "select id, current, withdrawn, user_id from balances where user_id = $1"
 
 	row := r.pool.QueryRow(ctx, query, userID)
 	var result models.DbBalance
