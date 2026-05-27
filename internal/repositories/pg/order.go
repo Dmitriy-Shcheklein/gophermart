@@ -83,3 +83,11 @@ func (r *Repository) GetUserBalance(ctx context.Context, userID int) (models.DbB
 	}
 	return result, nil
 }
+
+func (r *Repository) GetProcessingOrders(_ context.Context) ([]models.DbOrder, error) {
+	return nil, nil
+}
+
+func (r *Repository) UpdateOrder(_ context.Context, _ models.DbOrder) error {
+	return nil
+}

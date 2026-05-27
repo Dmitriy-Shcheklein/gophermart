@@ -51,7 +51,7 @@ func TestService_GetByUserID(t *testing.T) {
 			},
 		}
 
-		service, _ = New(&logger, mockRepository)
+		service, _ = New(&logger, mockRepository, NewMockLoyaltyService(t))
 	}
 
 	t.Run(

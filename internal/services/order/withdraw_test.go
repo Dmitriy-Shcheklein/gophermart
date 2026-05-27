@@ -37,7 +37,7 @@ func TestService_Withdraw(t *testing.T) {
 			UserID:    userID,
 		}
 
-		service, _ = New(&logger, mockRepository)
+		service, _ = New(&logger, mockRepository, NewMockLoyaltyService(t))
 	}
 
 	t.Run(

@@ -2,6 +2,8 @@ package bootstrap
 
 import (
 	"context"
+	"net/http"
+	"time"
 
 	"github.com/Dmitriy-Shcheklein/gophermart/internal/config"
 	"github.com/Dmitriy-Shcheklein/gophermart/internal/config/pgpool"
@@ -9,15 +11,17 @@ import (
 	userHandler "github.com/Dmitriy-Shcheklein/gophermart/internal/handlers/user"
 	"github.com/Dmitriy-Shcheklein/gophermart/internal/middlewares"
 	"github.com/Dmitriy-Shcheklein/gophermart/internal/repositories/pg"
+	loyaltySvc "github.com/Dmitriy-Shcheklein/gophermart/internal/services/loyalty"
 	orderSvc "github.com/Dmitriy-Shcheklein/gophermart/internal/services/order"
 	userSvc "github.com/Dmitriy-Shcheklein/gophermart/internal/services/user"
+	"github.com/Dmitriy-Shcheklein/gophermart/internal/workers/handle_orders"
 	"github.com/go-chi/chi/v5"
 
 	"github.com/rs/zerolog"
 )
 
 func Bootstrap(
-	_ context.Context, cfg *config.Config, router *chi.Mux, logger *zerolog.Logger, mw *middlewares.Middleware,
+	ctx context.Context, cfg *config.Config, router *chi.Mux, logger *zerolog.Logger, mw *middlewares.Middleware,
 ) error {
 	pool, err := pgpool.NewPool(cfg.DbDsn())
 	if err != nil {
@@ -35,12 +39,20 @@ func Bootstrap(
 	if err != nil {
 		return err
 	}
-	oSvc, err := orderSvc.New(logger, repository)
+	lSvc, err := loyaltySvc.New(logger, cfg, &http.Client{})
+	if err != nil {
+		return err
+	}
+	oSvc, err := orderSvc.New(logger, repository, lSvc)
 	if err != nil {
 		return err
 	}
 	authSvc := middlewares.NewAuthService()
 	oHandler, err := orderHandler.New(logger, oSvc, authSvc)
+	if err != nil {
+		return err
+	}
+	worker, err := handle_orders.New(logger, oSvc)
 	if err != nil {
 		return err
 	}
@@ -60,6 +72,13 @@ func Bootstrap(
 			r.Post("/withdraw", oHandler.Withdraw)
 		},
 	)
+
+	worker.Start(ctx, 1*time.Second)
+
+	go func() {
+		<-ctx.Done()
+		worker.Stop()
+	}()
 
 	return nil
 }

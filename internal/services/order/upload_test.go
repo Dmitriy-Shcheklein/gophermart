@@ -29,7 +29,7 @@ func TestService_Upload(t *testing.T) {
 		userID = 1
 		orderNum = "0"
 
-		service, _ = New(&logger, mockRepository)
+		service, _ = New(&logger, mockRepository, NewMockLoyaltyService(t))
 	}
 
 	t.Run(
