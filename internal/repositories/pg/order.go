@@ -61,7 +61,7 @@ func (r *Repository) Withdraw(ctx context.Context, balance models.DbBalance, wit
 	if err != nil {
 		return err
 	}
-	withdrawQuery := "insert into withdraws (sum, order, user_id) values ($1, $2, $3)"
+	withdrawQuery := "insert into withdraws (sum, order_num, user_id) values ($1, $2, $3)"
 	_, err = tx.Exec(ctx, withdrawQuery, withdraw.Sum, withdraw.Order, withdraw.UserID)
 	if err != nil {
 		return err

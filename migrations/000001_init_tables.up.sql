@@ -34,7 +34,7 @@ create table if not exists withdrawns
 (
     id serial primary key,
     sum numeric(1000, 2) not null,
-    order varchar(255) not null,
+    order_num varchar(255) not null,
     user_id integer not null
     );
 
