@@ -17,11 +17,13 @@ func (r *Repository) CreateOrder(ctx context.Context, userID int, orderNum strin
 }
 
 func (r *Repository) GetOrderByNum(ctx context.Context, orderNum string) (models.DbOrder, error) {
-	query := "select id, status, uploaded_at, accrual, number from orders where number = $1"
+	query := "select id, status, uploaded_at, accrual, number, user_id from orders where number = $1"
 
 	row := r.pool.QueryRow(ctx, query, orderNum)
 	var result models.DbOrder
-	if err := row.Scan(&result); err != nil {
+	if err := row.Scan(
+		&result.ID, &result.Status, &result.UploadedAt, &result.Accrual, &result.Number, &result.UserID,
+	); err != nil {
 		return models.DbOrder{}, err
 	}
 	return result, nil
