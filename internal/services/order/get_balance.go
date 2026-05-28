@@ -6,6 +6,7 @@ import (
 	"github.com/Dmitriy-Shcheklein/gophermart/internal/models"
 )
 
+// GetBalance получение баланса пользователя
 func (s *Service) GetBalance(ctx context.Context, userID int) (models.ResponseBalance, error) {
 	var balance models.ResponseBalance
 	dbBalance, err := s.repository.GetUserBalance(ctx, userID)

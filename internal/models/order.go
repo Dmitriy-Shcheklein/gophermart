@@ -6,42 +6,68 @@ import (
 )
 
 type (
-	OrderStatuses   string
+	// OrderStatuses тип описывающий статусы заказов
+	OrderStatuses string
+	// LoyaltyStatuses тип описывающий статусы расчетов
 	LoyaltyStatuses string
 )
 
 const (
-	NewOrder        OrderStatuses = "NEW"
+	// NewOrder заказ загружен в систему, но не попал в обработку
+	NewOrder OrderStatuses = "NEW"
+	// ProcessingOrder вознаграждение за заказ рассчитывается
 	ProcessingOrder OrderStatuses = "PROCESSING"
-	InvalidOrder    OrderStatuses = "INVALID"
-	ProcessedOrder  OrderStatuses = "PROCESSED"
+	// InvalidOrder система расчёта вознаграждений отказала в расчёте
+	InvalidOrder OrderStatuses = "INVALID"
+	// ProcessedOrder данные по заказу проверены и информация о расчёте успешно получена
+	ProcessedOrder OrderStatuses = "PROCESSED"
 )
 
 const (
+	// Registered заказ зарегистрирован, но вознаграждение не рассчитано
 	Registered = "REGISTERED"
-	Invalid    = "INVALID"
+	// Invalid заказ не принят к расчёту, и вознаграждение не будет начислено
+	Invalid = "INVALID"
+	// Processing расчёт начисления в процессе
 	Processing = "PROCESSING"
-	Processed  = "PROCESSED"
+	// Processed расчёт начисления окончен
+	Processed = "PROCESSED"
 )
 
+// DbOrder структура описывающая модель данных заказа в БД
 type DbOrder struct {
-	ID         int             `db:"id"`
-	Number     string          `db:"number"`
-	Status     OrderStatuses   `db:"status"`
-	UploadedAt time.Time       `db:"uploaded_at"`
-	Accrual    sql.NullFloat64 `db:"accrual"`
-	UserID     int             `db:"user_id"`
+	// ID идентификатора записи в бд
+	ID int `db:"id"`
+	// Number номер заказа
+	Number string `db:"number"`
+	// Status статус заказа
+	Status OrderStatuses `db:"status"`
+	// UploadedAt время загрузки заказа
+	UploadedAt time.Time `db:"uploaded_at"`
+	// Accrual количество баллов за заказ
+	Accrual sql.NullFloat64 `db:"accrual"`
+	// UserID идентификатор пользователя
+	UserID int `db:"user_id"`
 }
 
+// RequestOrder структура описывающая модель данных ответа по заказу
 type RequestOrder struct {
-	Number     string        `json:"number"`
-	Status     OrderStatuses `json:"status"`
-	UploadedAt time.Time     `json:"uploaded_at"`
-	Accrual    *float64      `json:"accrual,omitempty"`
+	// Number номер заказа
+	Number string `json:"number"`
+	// Status статус заказа
+	Status OrderStatuses `json:"status"`
+	// UploadedAt время загрузки заказа
+	UploadedAt time.Time `json:"uploaded_at"`
+	// Accrual количество баллов за заказ
+	Accrual *float64 `json:"accrual,omitempty"`
 }
 
+// LoyaltyOrderData структура описывающая модель данных ответа от системы расчета
 type LoyaltyOrderData struct {
-	Order   string          `json:"order" validate:"required,min=1"`
-	Status  LoyaltyStatuses `json:"status" validate:"required,oneof=REGISTERED INVALID PROCESSING PROCESSED"`
-	Accrual *float64        `json:"accrual,omitempty"`
+	// Order идентификатор заказа
+	Order string `json:"order" validate:"required,min=1"`
+	// Status статус расчета
+	Status LoyaltyStatuses `json:"status" validate:"required,oneof=REGISTERED INVALID PROCESSING PROCESSED"`
+	// Accrual количество баллов за заказ
+	Accrual *float64 `json:"accrual,omitempty"`
 }

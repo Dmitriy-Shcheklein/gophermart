@@ -10,6 +10,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// Claims структура токена авторизации
 type Claims struct {
 	UserID int
 	Login  string
@@ -18,8 +19,10 @@ type Claims struct {
 
 var tokenExp = time.Hour
 
+// SecretKey ключ подписи
 var SecretKey = []byte("secret_key")
 
+// Auth авторизация пользователя
 func (s *Service) Auth(ctx context.Context, login string, password string) (string, error) {
 	user, err := s.repository.GetUserByLogin(ctx, login)
 	if err != nil {
@@ -37,6 +40,7 @@ func (s *Service) Auth(ctx context.Context, login string, password string) (stri
 	return jwtString, nil
 }
 
+// BuildJWTString функция получения строкового токена пользователя
 func BuildJWTString(user models.DbUser) (string, error) {
 	token := jwt.NewWithClaims(
 		jwt.SigningMethodHS256, Claims{

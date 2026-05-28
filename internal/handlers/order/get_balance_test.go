@@ -57,6 +57,7 @@ func TestHandler_GetBalance(t *testing.T) {
 				"{\"current\":10,\"withdrawn\":100}",
 				strings.TrimSpace(w.Body.String()),
 			)
+			assert.Equal(t, "application/json", w.Header().Get("Content-Type"))
 		},
 	)
 

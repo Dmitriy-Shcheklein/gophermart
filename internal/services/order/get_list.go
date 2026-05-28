@@ -6,6 +6,7 @@ import (
 	"github.com/Dmitriy-Shcheklein/gophermart/internal/models"
 )
 
+// GetList получение списка заказов пользователя
 func (s *Service) GetList(ctx context.Context, userID int) ([]models.RequestOrder, error) {
 	dbOrders, err := s.repository.GetByUserId(ctx, userID)
 	if err != nil {

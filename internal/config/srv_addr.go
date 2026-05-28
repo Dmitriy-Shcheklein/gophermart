@@ -9,18 +9,21 @@ import (
 	"strings"
 )
 
+// SrvAddr структура для хранения конфигурации адреса запуска сервиса
 type SrvAddr struct {
-	Host string
-	Port int
+	host string
+	port int
 }
 
+// NewSrvAddr конструктор для конфигурации адреса запуска сервиса
 func NewSrvAddr() *SrvAddr {
 	port := 8080
-	srvAddr := &SrvAddr{Host: "localhost", Port: port}
+	srvAddr := &SrvAddr{host: "localhost", port: port}
 	flag.Var(srvAddr, "a", "server address host:port")
 	return srvAddr
 }
 
+// ApplyEnv метод для применения данных из .ENV
 func (a *SrvAddr) ApplyEnv() {
 	serverAddress, ok := os.LookupEnv("RUN_ADDRESS")
 	if !ok || serverAddress == "" {
@@ -31,10 +34,12 @@ func (a *SrvAddr) ApplyEnv() {
 	}
 }
 
+// String реализация для соответствия интерфейсу flag.Var
 func (a *SrvAddr) String() string {
-	return a.Host + ":" + strconv.Itoa(a.Port)
+	return a.host + ":" + strconv.Itoa(a.port)
 }
 
+// Set реализация для соответствия интерфейсу flag.Var
 func (a *SrvAddr) Set(s string) error {
 	hp := strings.Split(s, ":")
 	validLength := 2
@@ -45,7 +50,7 @@ func (a *SrvAddr) Set(s string) error {
 	if err != nil {
 		return err
 	}
-	a.Host = hp[0]
-	a.Port = port
+	a.host = hp[0]
+	a.port = port
 	return nil
 }

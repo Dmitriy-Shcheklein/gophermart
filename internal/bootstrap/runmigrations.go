@@ -10,6 +10,7 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
+// RunMigration запуск миграций
 func RunMigration(connString string) error {
 	m, err := migrate.New("file://./migrations", connString)
 	if err != nil {

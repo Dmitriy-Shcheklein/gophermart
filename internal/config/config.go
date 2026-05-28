@@ -1,3 +1,4 @@
+// Package config конфигурация приложения
 package config
 
 import (
@@ -16,11 +17,7 @@ type Config struct {
 	accrualSystemAddr string
 }
 
-type DbDSN struct {
-	Value   string
-	IsValid bool
-}
-
+// New конструктор для конфигурации
 func New() (*Config, error) {
 	srvAddr := NewSrvAddr()
 	dsn := NewDSN()
@@ -30,29 +27,32 @@ func New() (*Config, error) {
 	dsn.ApplyEnv()
 	accrual.ApplyEnv()
 
-	if dsn.Value == "" {
+	if dsn.value == "" {
 		return nil, fmt.Errorf("invalid db dsn: %w", errConfig)
 	}
-	if accrual.Value == "" {
+	if accrual.value == "" {
 		return nil, fmt.Errorf("invalid accrual system address: %w", errConfig)
 	}
 
 	return &Config{
-		host:              srvAddr.Host,
-		port:              srvAddr.Port,
-		accrualSystemAddr: accrual.Value,
-		dbDSN:             dsn.Value,
+		host:              srvAddr.host,
+		port:              srvAddr.port,
+		accrualSystemAddr: accrual.value,
+		dbDSN:             dsn.value,
 	}, nil
 }
 
+// GetSrvAddr Метод для получения адреса для запуска сервиса
 func (c *Config) GetSrvAddr() string {
 	return c.host + ":" + strconv.Itoa(c.port)
 }
 
+// DbDsn Метод для получения строки подключения к БД
 func (c *Config) DbDsn() string {
 	return c.dbDSN
 }
 
+// GetAccrualSrvAddr Метода для получения адреса системы расчетов баллов
 func (c *Config) GetAccrualSrvAddr() string {
 	return c.accrualSystemAddr
 }

@@ -6,6 +6,7 @@ import (
 	"github.com/Dmitriy-Shcheklein/gophermart/internal/models"
 )
 
+// GetWithdrawals получение списаний баллов
 func (s *Service) GetWithdrawals(ctx context.Context, userID int) ([]models.ResponseWithdrawn, error) {
 	dbWithdrawals, err := s.repository.GetWithdrawals(ctx, userID)
 	if err != nil {

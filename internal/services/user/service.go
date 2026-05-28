@@ -1,3 +1,4 @@
+// Package user пакет по работе с пользователем
 package user
 
 import (
@@ -10,16 +11,19 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// Repository интерфейс описывающий методы репозитория
 type Repository interface {
 	CreateUser(ctx context.Context, login string, password string, balance models.DbBalance) (models.DbUser, error)
 	GetUserByLogin(ctx context.Context, login string) (*models.DbUser, error)
 }
 
+// Service структура сервиса
 type Service struct {
 	logger     *zerolog.Logger
 	repository Repository
 }
 
+// New конструктор сервиса
 func New(logger *zerolog.Logger, repository Repository) (*Service, error) {
 	if logger == nil {
 		return nil, fmt.Errorf("%w: logger", errors.ErrEmptyDep)

@@ -6,16 +6,19 @@ import (
 	"os"
 )
 
+// DSN структруа для хранения конфигурации адреса подключения к БД
 type DSN struct {
-	Value string
+	value string
 }
 
+// NewDSN конструктор для конфигурации адреса подключения к БД
 func NewDSN() *DSN {
 	dsn := &DSN{}
 	flag.Var(dsn, "d", "Database uri")
 	return dsn
 }
 
+// ApplyEnv метод для применения данных из .ENV
 func (a *DSN) ApplyEnv() {
 	dsn, ok := os.LookupEnv("DATABASE_URI")
 	if !ok || dsn == "" {
@@ -26,11 +29,13 @@ func (a *DSN) ApplyEnv() {
 	}
 }
 
+// String реализация для соответствия интерфейсу flag.Var
 func (a *DSN) String() string {
-	return a.Value
+	return a.value
 }
 
+// Set реализация для соответствия интерфейсу flag.Var
 func (a *DSN) Set(s string) error {
-	a.Value = s
+	a.value = s
 	return nil
 }

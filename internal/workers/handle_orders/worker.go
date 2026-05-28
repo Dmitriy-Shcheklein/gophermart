@@ -1,3 +1,4 @@
+// Package handle_orders пакет который реализует воркер для фоновой обработки статусов заказов
 package handle_orders
 
 import (
@@ -11,10 +12,12 @@ import (
 	"github.com/rs/zerolog"
 )
 
+// Service интерфейс службы для реализации логики обработки
 type Service interface {
 	ProcessOrders(ctx context.Context) error
 }
 
+// Worker структура воркера
 type Worker struct {
 	logger     *zerolog.Logger
 	service    Service
@@ -24,6 +27,7 @@ type Worker struct {
 	timeout    time.Duration
 }
 
+// New конструктор воркера
 func New(logger *zerolog.Logger, service Service) (*Worker, error) {
 	if logger == nil {
 		return nil, fmt.Errorf("%w: logger", errors.ErrEmptyDep)
@@ -34,6 +38,7 @@ func New(logger *zerolog.Logger, service Service) (*Worker, error) {
 	return &Worker{logger: logger, service: service}, nil
 }
 
+// Start запуск воркера
 func (w *Worker) Start(ctx context.Context, timeout time.Duration) {
 	if w.isStarted.Load() {
 		return
@@ -55,6 +60,7 @@ func (w *Worker) Start(ctx context.Context, timeout time.Duration) {
 	w.logger.Info().Msg("worker started")
 }
 
+// Stop остановка воркера
 func (w *Worker) Stop() {
 	if !w.isStarted.Load() {
 		return

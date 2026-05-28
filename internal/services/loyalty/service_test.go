@@ -1,4 +1,4 @@
-package order
+package loyalty
 
 import (
 	"testing"

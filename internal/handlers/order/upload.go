@@ -8,6 +8,7 @@ import (
 	domainErrors "github.com/Dmitriy-Shcheklein/gophermart/internal/errors"
 )
 
+// Upload загрузка заказов пользователя
 func (h *Handler) Upload(w http.ResponseWriter, r *http.Request) {
 	if contentType := r.Header.Get("Content-Type"); contentType != "text/plain" {
 		http.Error(w, domainErrors.InvalidContentTypeMsg, http.StatusBadRequest)

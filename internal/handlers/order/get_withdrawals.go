@@ -5,6 +5,7 @@ import (
 	"net/http"
 )
 
+// GetWithdrawals получение списка списаний баллов пользователя
 func (h *Handler) GetWithdrawals(w http.ResponseWriter, r *http.Request) {
 	userID, err := h.authService.GetUserID(r.Context())
 	if err != nil {

@@ -9,6 +9,7 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
+// Register регистрация нового пользователя
 func (s *Service) Register(ctx context.Context, login, password string) (string, error) {
 	hashPass, err := hashPassword(password)
 	if err != nil {

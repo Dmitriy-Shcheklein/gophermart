@@ -1,4 +1,4 @@
-package order
+package loyalty
 
 import (
 	"context"
@@ -12,6 +12,7 @@ import (
 	"github.com/Dmitriy-Shcheklein/gophermart/internal/models"
 )
 
+// GetOrder метода получения данных по заказу
 func (s *Service) GetOrder(ctx context.Context, orderNum string) (models.LoyaltyOrderData, error) {
 	var order models.LoyaltyOrderData
 	if s.isWait.Load() {

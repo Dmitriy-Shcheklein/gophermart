@@ -9,6 +9,7 @@ import (
 	"github.com/Dmitriy-Shcheklein/gophermart/internal/models"
 )
 
+// Withdraw списание баллов пользователя
 func (h *Handler) Withdraw(w http.ResponseWriter, r *http.Request) {
 	if contentType := r.Header.Get("Content-Type"); contentType != "application/json" {
 		http.Error(w, domainErrors.InvalidContentTypeMsg, http.StatusBadRequest)

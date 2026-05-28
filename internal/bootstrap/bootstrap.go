@@ -1,3 +1,4 @@
+// Package bootstrap - пакет содержит логику инициализации компонентов приложения
 package bootstrap
 
 import (
@@ -20,6 +21,7 @@ import (
 	"github.com/rs/zerolog"
 )
 
+// Bootstrap собирает приложение и реализует DI
 func Bootstrap(
 	ctx context.Context, cfg *config.Config, router *chi.Mux, logger *zerolog.Logger, mw *middlewares.Middleware,
 ) error {

@@ -8,6 +8,7 @@ import (
 	"github.com/Dmitriy-Shcheklein/gophermart/internal/models"
 )
 
+// Withdraw Списание баллов
 func (s *Service) Withdraw(ctx context.Context, userID int, sum float64, orderNum string) error {
 	if !validateLuhn(orderNum) {
 		return domainErrors.ErrOrderInvalidNumber

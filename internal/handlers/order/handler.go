@@ -10,6 +10,7 @@ import (
 	"github.com/rs/zerolog"
 )
 
+// Service интерфейс сервиса с доменной логикой
 type Service interface {
 	Upload(ctx context.Context, userID int, orderNum string) error
 	GetList(ctx context.Context, userID int) ([]models.RequestOrder, error)
@@ -18,10 +19,12 @@ type Service interface {
 	GetWithdrawals(ctx context.Context, userID int) ([]models.ResponseWithdrawn, error)
 }
 
+// AuthService интерфейс сервиса получения данных от системы расчета баллов
 type AuthService interface {
 	GetUserID(ctx context.Context) (int, error)
 }
 
+// Handler структура обработчика запросов
 type Handler struct {
 	logger      *zerolog.Logger
 	service     Service
@@ -29,6 +32,7 @@ type Handler struct {
 	authService AuthService
 }
 
+// New конструктор обработчика запросов
 func New(logger *zerolog.Logger, service Service, authService AuthService) (*Handler, error) {
 	if logger == nil {
 		return nil, fmt.Errorf("%w: logger", errors.ErrEmptyDep)

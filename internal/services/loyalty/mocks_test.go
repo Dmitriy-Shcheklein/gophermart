@@ -2,7 +2,7 @@
 // github.com/vektra/mockery
 // template: testify
 
-package order
+package loyalty
 
 import (
 	"net/http"

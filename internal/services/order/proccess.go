@@ -7,6 +7,7 @@ import (
 	"github.com/Dmitriy-Shcheklein/gophermart/internal/models"
 )
 
+// ProcessOrders обработка не рассчитанных заказов
 func (s *Service) ProcessOrders(ctx context.Context) error {
 	orders, err := s.repository.GetProcessingOrders(ctx)
 	s.logger.Info().Int("count", len(orders)).Msg("Processing orders")

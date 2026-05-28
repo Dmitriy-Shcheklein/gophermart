@@ -11,6 +11,7 @@ const (
 	logContext = "userRepository"
 )
 
+// CreateUser метод создания нового пользователя
 func (r *Repository) CreateUser(
 	ctx context.Context, login string, password string, balance models.DbBalance,
 ) (models.DbUser, error) {
@@ -48,6 +49,7 @@ func (r *Repository) CreateUser(
 	return user, nil
 }
 
+// GetUserByLogin метод получения пользователя по логину
 func (r *Repository) GetUserByLogin(ctx context.Context, login string) (*models.DbUser, error) {
 	const logCode = "GetUserByLogin"
 	r.logger.Debug().Str("context", logContext).Str("code", logCode).Msg("Start")

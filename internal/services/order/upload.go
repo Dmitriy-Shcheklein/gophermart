@@ -8,6 +8,7 @@ import (
 	"github.com/jackc/pgx/v5/pgconn"
 )
 
+// Upload загрузка заказа
 func (s *Service) Upload(ctx context.Context, userID int, orderNum string) error {
 	if !validateLuhn(orderNum) {
 		return domainErrors.ErrOrderInvalidNumber

@@ -1,3 +1,4 @@
+// Package order пакет по работе с заказами
 package order
 
 import (
@@ -9,6 +10,7 @@ import (
 	"github.com/rs/zerolog"
 )
 
+// Repository интерфейс описывающий методы репозитория
 type Repository interface {
 	CreateOrder(ctx context.Context, userID int, orderNum string) error
 	GetOrderByNum(ctx context.Context, orderNum string) (models.DbOrder, error)
@@ -20,16 +22,19 @@ type Repository interface {
 	GetWithdrawals(ctx context.Context, userID int) ([]models.DbWithdrawn, error)
 }
 
+// LoyaltyService интерфейс службы получения данных по расчетам баллов
 type LoyaltyService interface {
 	GetOrder(ctx context.Context, orderNum string) (models.LoyaltyOrderData, error)
 }
 
+// Service структура описывающая сервис
 type Service struct {
 	logger         *zerolog.Logger
 	repository     Repository
 	loyaltyService LoyaltyService
 }
 
+// New конструктор сервиса
 func New(logger *zerolog.Logger, repository Repository, loyalty LoyaltyService) (*Service, error) {
 	if logger == nil {
 		return nil, fmt.Errorf("%w: logger", errors.ErrEmptyDep)

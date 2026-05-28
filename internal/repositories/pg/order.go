@@ -8,6 +8,7 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
+// CreateOrder метод создания заказа
 func (r *Repository) CreateOrder(ctx context.Context, userID int, orderNum string) error {
 	query := "insert into orders (number, user_id, status) values($1, $2, $3)"
 	_, err := r.pool.Exec(ctx, query, orderNum, userID, models.NewOrder)
@@ -17,6 +18,7 @@ func (r *Repository) CreateOrder(ctx context.Context, userID int, orderNum strin
 	return nil
 }
 
+// GetOrderByNum метод получения заказа по его идентификатору
 func (r *Repository) GetOrderByNum(ctx context.Context, orderNum string) (models.DbOrder, error) {
 	query := "select id, status, uploaded_at, accrual, number, user_id from orders where number = $1"
 
@@ -30,6 +32,7 @@ func (r *Repository) GetOrderByNum(ctx context.Context, orderNum string) (models
 	return result, nil
 }
 
+// GetByUserId метод получения заказов пользователя
 func (r *Repository) GetByUserId(ctx context.Context, userID int) ([]models.DbOrder, error) {
 	query := "select id, status, uploaded_at, accrual, number from orders where user_id = $1 order by uploaded_at desc"
 	rows, err := r.pool.Query(ctx, query, userID)
@@ -43,6 +46,7 @@ func (r *Repository) GetByUserId(ctx context.Context, userID int) ([]models.DbOr
 	return orders, nil
 }
 
+// Withdraw метод списания баллов
 func (r *Repository) Withdraw(ctx context.Context, balance models.DbBalance, withdraw models.DbWithdrawn) (err error) {
 	tx, err := r.pool.Begin(ctx)
 	if err != nil {
@@ -71,6 +75,7 @@ func (r *Repository) Withdraw(ctx context.Context, balance models.DbBalance, wit
 	return nil
 }
 
+// GetUserBalance метод получения баланса пользователя
 func (r *Repository) GetUserBalance(ctx context.Context, userID int) (models.DbBalance, error) {
 	r.logger.Debug().Int("userID", userID).Msg("GetUserBalance")
 	query := "select id, current, withdrawn, user_id from balances where user_id = $1"
@@ -86,6 +91,7 @@ func (r *Repository) GetUserBalance(ctx context.Context, userID int) (models.DbB
 	return result, nil
 }
 
+// GetProcessingOrders метод получения заказов для обработки
 func (r *Repository) GetProcessingOrders(ctx context.Context) ([]models.DbOrder, error) {
 	query := "select id, status, uploaded_at, accrual, number from orders where status != 'INVALID' and status != 'PROCESSED'"
 	rows, err := r.pool.Query(ctx, query)
@@ -99,6 +105,7 @@ func (r *Repository) GetProcessingOrders(ctx context.Context) ([]models.DbOrder,
 	return orders, nil
 }
 
+// UpdateOrder метод обновления заказа
 func (r *Repository) UpdateOrder(ctx context.Context, order models.DbOrder) error {
 	query := "update orders set status = $1, accrual = $2 where number = $3"
 
@@ -109,6 +116,7 @@ func (r *Repository) UpdateOrder(ctx context.Context, order models.DbOrder) erro
 	return nil
 }
 
+// GetWithdrawals метод получения списаний баллов
 func (r *Repository) GetWithdrawals(ctx context.Context, userID int) ([]models.DbWithdrawn, error) {
 	query := "select id, sum, order_num, user_id, processed_at from withdrawns where user_id = $1 order by processed_at desc"
 

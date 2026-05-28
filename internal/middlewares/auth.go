@@ -13,14 +13,15 @@ import (
 
 var secretKey = user.SecretKey
 
-type Claims = user.Claims
+type claims = user.Claims
 
-type UserToken string
+type token string
 
-const userToken UserToken = "user_token"
+const userToken token = "user_token"
 
 var errInvalidUserFormat = errors.New("invalid user format")
 
+// Auth middleware авторизации
 func (m *Middleware) Auth(h http.Handler) http.Handler {
 	return http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
@@ -45,26 +46,29 @@ func verifyToken(r *http.Request, jwtToken string) (*http.Request, error) {
 		return r, fmt.Errorf("%w: invalid token format", errInvalidUserFormat)
 	}
 
-	claims := Claims{}
+	currClaims := claims{}
 	if _, err := jwt.ParseWithClaims(
-		jwtToken, &claims, func(t *jwt.Token) (interface{}, error) {
+		jwtToken, &currClaims, func(t *jwt.Token) (interface{}, error) {
 			return secretKey, nil
 		},
 	); err != nil {
 		return r, err
 	}
-	ctx := context.WithValue(r.Context(), userToken, claims)
+	ctx := context.WithValue(r.Context(), userToken, currClaims)
 	return r.WithContext(ctx), nil
 }
 
+// NewAuthService конструктор для сервиса авторизации
 func NewAuthService() *AuthService {
 	return &AuthService{}
 }
 
+// AuthService структура сервиса авторизации
 type AuthService struct{}
 
+// GetUserID метод получения идентификатора пользователя из контекста запроса
 func (a *AuthService) GetUserID(ctx context.Context) (int, error) {
-	v, ok := ctx.Value(userToken).(Claims)
+	v, ok := ctx.Value(userToken).(claims)
 	if !ok {
 		return 0, errors.New("error while getting UserID")
 	}

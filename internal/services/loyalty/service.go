@@ -1,4 +1,5 @@
-package order
+// Package loyalty пакет для получения данных по расчету баллов
+package loyalty
 
 import (
 	"fmt"
@@ -11,16 +12,19 @@ import (
 	"github.com/rs/zerolog"
 )
 
+// Config интерфейс конфигурации
 type Config interface {
+	// GetAccrualSrvAddr метод получения адреса системы расчета баллов
 	GetAccrualSrvAddr() string
 }
 
+// HttpClient интерфейс клиента
 type HttpClient interface {
+	// Get метода для формирования GET запроса
 	Get(url string) (resp *http.Response, err error)
 }
 
-type GetFunc = func(url string) (resp *http.Response, err error)
-
+// Service структура описывающая сервис
 type Service struct {
 	logger     *zerolog.Logger
 	cfg        Config
@@ -30,6 +34,7 @@ type Service struct {
 	httpClient HttpClient
 }
 
+// New конструктор сервиса
 func New(logger *zerolog.Logger, cfg Config, httpClient HttpClient) (*Service, error) {
 	if logger == nil {
 		return nil, fmt.Errorf("%w: logger", errors.ErrEmptyDep)

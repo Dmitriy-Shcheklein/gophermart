@@ -5,6 +5,7 @@ import (
 	"net/http"
 )
 
+// GetBalance получение баланса пользователя
 func (h *Handler) GetBalance(w http.ResponseWriter, r *http.Request) {
 	userID, err := h.authService.GetUserID(r.Context())
 	if err != nil {

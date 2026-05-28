@@ -5,6 +5,7 @@ import (
 	"net/http"
 )
 
+// GetList получение списка заказов пользователя
 func (h *Handler) GetList(w http.ResponseWriter, r *http.Request) {
 	userID, err := h.authService.GetUserID(r.Context())
 	if err != nil {
