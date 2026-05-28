@@ -84,7 +84,6 @@ func (w *Worker) handle(ctx context.Context) {
 			case <-ctx.Done():
 				return
 			case <-time.After(w.timeout):
-				return
 			}
 		}
 	}
