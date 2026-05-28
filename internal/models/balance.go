@@ -6,3 +6,8 @@ type DbBalance struct {
 	Withdrawn float64 `db:"withdrawn"`
 	UserID    int     `db:"user_id"`
 }
+
+type ResponseBalance struct {
+	Current   float64 `json:"current"`
+	Withdrawn float64 `json:"withdrawn"`
+}

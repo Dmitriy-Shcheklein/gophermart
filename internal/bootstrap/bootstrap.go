@@ -70,6 +70,7 @@ func Bootstrap(
 		"/api/user/balance", func(r chi.Router) {
 			r.Use(mw.Auth)
 			r.Post("/withdraw", oHandler.Withdraw)
+			r.Get("/", oHandler.GetBalance)
 		},
 	)
 
