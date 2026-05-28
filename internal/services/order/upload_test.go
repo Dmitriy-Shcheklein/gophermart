@@ -91,4 +91,48 @@ func TestService_Upload(t *testing.T) {
 			assert.ErrorIs(t, err, domainErrors.ErrOrderAlreadyExists)
 		},
 	)
+
+	t.Run(
+		"Empty order number error", func(t *testing.T) {
+			setup(t)
+
+			mockRepository.EXPECT().CreateOrder(mock.Anything, userID, "").Return(assert.AnError)
+
+			err := service.Upload(context.Background(), userID, "")
+
+			require.Error(t, err)
+			assert.Equal(t, assert.AnError, err)
+		},
+	)
+
+	t.Run(
+		"Invalid Luhn algorithm numbers", func(t *testing.T) {
+			setup(t)
+
+			invalidNumbers := []string{"123", "12345678901", "123456789012"}
+
+			for _, invalidNum := range invalidNumbers {
+				err := service.Upload(context.Background(), userID, invalidNum)
+
+				require.Error(t, err)
+				assert.ErrorIs(t, err, domainErrors.ErrOrderInvalidNumber)
+			}
+		},
+	)
+
+	t.Run(
+		"Valid Luhn algorithm numbers", func(t *testing.T) {
+			setup(t)
+
+			validNumbers := []string{"0", "79927398713"}
+
+			for _, validNum := range validNumbers {
+				mockRepository.EXPECT().CreateOrder(mock.Anything, userID, validNum).Return(nil)
+
+				err := service.Upload(context.Background(), userID, validNum)
+
+				require.NoError(t, err)
+			}
+		},
+	)
 }

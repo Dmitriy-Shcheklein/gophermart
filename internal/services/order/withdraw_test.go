@@ -102,4 +102,52 @@ func TestService_Withdraw(t *testing.T) {
 			assert.ErrorIs(t, err, testError)
 		},
 	)
+
+	t.Run(
+		"Empty order number error", func(t *testing.T) {
+			setup(t)
+
+			mockRepository.EXPECT().GetUserBalance(mock.Anything, userID).Return(balance, nil)
+			mockRepository.EXPECT().Withdraw(
+				mock.Anything,
+				models.DbBalance{UserID: balance.UserID, ID: balance.ID, Current: 0.01, Withdrawn: 1100.22},
+				models.DbWithdrawn{Order: "", Sum: sum, UserID: userID},
+			).Return(assert.AnError)
+
+			err := service.Withdraw(context.Background(), userID, sum, "")
+
+			require.Error(t, err)
+			assert.Equal(t, assert.AnError, err)
+		},
+	)
+
+	t.Run(
+		"Invalid Luhn algorithm order number", func(t *testing.T) {
+			setup(t)
+
+			err := service.Withdraw(context.Background(), userID, sum, "invalid")
+
+			require.Error(t, err)
+			assert.ErrorIs(t, err, domainErrors.ErrOrderInvalidNumber)
+		},
+	)
+
+	t.Run(
+		"Insufficient balance error", func(t *testing.T) {
+			setup(t)
+
+			insufficientBalance := models.DbBalance{
+				ID:        1,
+				Current:   50.0,
+				Withdrawn: 1000,
+				UserID:    userID,
+			}
+			mockRepository.EXPECT().GetUserBalance(mock.Anything, userID).Return(insufficientBalance, nil)
+
+			err := service.Withdraw(context.Background(), userID, 100.0, "0")
+
+			require.Error(t, err)
+			assert.ErrorIs(t, err, domainErrors.ErrOrderNotEnoughBalance)
+		},
+	)
 }

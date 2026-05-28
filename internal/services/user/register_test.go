@@ -8,6 +8,7 @@ import (
 	domainErrors "github.com/Dmitriy-Shcheklein/gophermart/internal/errors"
 	"github.com/Dmitriy-Shcheklein/gophermart/internal/models"
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -79,6 +80,48 @@ func TestService_Register(t *testing.T) {
 
 			require.Error(t, err)
 			assert.Equal(t, testError, err)
+		},
+	)
+
+	t.Run(
+		"Duplicate user error", func(t *testing.T) {
+			setup(t)
+
+			mockRepository.EXPECT().CreateUser(mock.Anything, mock.Anything, mock.Anything, mock.Anything).
+				Return(user, &pgconn.PgError{Code: "23505"})
+
+			_, err := service.Register(context.Background(), "existinguser", "password")
+
+			require.Error(t, err)
+		},
+	)
+
+	t.Run(
+		"Database error on user creation", func(t *testing.T) {
+			setup(t)
+
+			mockRepository.EXPECT().CreateUser(mock.Anything, mock.Anything, mock.Anything, mock.Anything).
+				Return(user, assert.AnError)
+
+			_, err := service.Register(context.Background(), "testuser", "password")
+
+			require.Error(t, err)
+			assert.Equal(t, assert.AnError, err)
+		},
+	)
+
+	t.Run(
+		"Password hashing error", func(t *testing.T) {
+			setup(t)
+
+			mockRepository.EXPECT().CreateUser(mock.Anything, "", mock.Anything, mock.Anything).Return(
+				user, pgx.ErrNoRows,
+			)
+
+			_, err := service.Register(context.Background(), "", "password")
+
+			require.Error(t, err)
+			assert.Equal(t, domainErrors.ErrLoginDuplicate, err)
 		},
 	)
 }

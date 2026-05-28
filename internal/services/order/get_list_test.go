@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/Dmitriy-Shcheklein/gophermart/internal/models"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -93,6 +94,47 @@ func TestService_GetByUserID(t *testing.T) {
 
 			require.Error(t, err)
 			assert.Equal(t, testError, err)
+		},
+	)
+
+	t.Run(
+		"Empty order list", func(t *testing.T) {
+			setup(t)
+
+			mockRepository.EXPECT().GetByUserId(mock.Anything, userID).Return([]models.DbOrder{}, nil)
+
+			result, err := service.GetList(context.Background(), userID)
+
+			require.NoError(t, err)
+			assert.Empty(t, result)
+		},
+	)
+
+	t.Run(
+		"Partial database error on list retrieval", func(t *testing.T) {
+			setup(t)
+
+			mockRepository.EXPECT().GetByUserId(mock.Anything, userID).Return(nil, &pgconn.PgError{Code: "08006"})
+
+			result, err := service.GetList(context.Background(), userID)
+
+			require.Error(t, err)
+			assert.Nil(t, result)
+		},
+	)
+
+	t.Run(
+		"Multiple orders successful retrieval", func(t *testing.T) {
+			setup(t)
+
+			mockRepository.EXPECT().GetByUserId(mock.Anything, userID).Return(repoResult, nil)
+
+			result, err := service.GetList(context.Background(), userID)
+
+			require.NoError(t, err)
+			assert.Len(t, result, 2)
+			assert.Equal(t, "123", result[0].Number)
+			assert.Equal(t, "321", result[1].Number)
 		},
 	)
 }

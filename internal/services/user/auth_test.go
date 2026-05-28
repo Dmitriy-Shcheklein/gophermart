@@ -74,4 +74,30 @@ func TestService_Auth(t *testing.T) {
 			assert.Equal(t, domainErrors.ErrInvalidAuthData, err)
 		},
 	)
+
+	t.Run(
+		"Empty password error", func(t *testing.T) {
+			setup(t)
+
+			mockRepository.EXPECT().GetUserByLogin(mock.Anything, "login").Return(&user, nil)
+
+			_, err := service.Auth(context.Background(), "login", "")
+
+			require.Error(t, err)
+			assert.ErrorIs(t, err, domainErrors.ErrInvalidAuthData)
+		},
+	)
+
+	t.Run(
+		"Database connection error", func(t *testing.T) {
+			setup(t)
+
+			mockRepository.EXPECT().GetUserByLogin(mock.Anything, "testuser").Return(nil, assert.AnError)
+
+			_, err := service.Auth(context.Background(), "testuser", "password")
+
+			require.Error(t, err)
+			assert.Equal(t, assert.AnError, err)
+		},
+	)
 }

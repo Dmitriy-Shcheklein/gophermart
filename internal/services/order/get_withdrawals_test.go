@@ -88,4 +88,51 @@ func TestService_GetWithdrawals(t *testing.T) {
 			assert.Equal(t, testError, err)
 		},
 	)
+
+	t.Run(
+		"Empty withdrawals list", func(t *testing.T) {
+			setup(t)
+
+			mockRepository.EXPECT().GetWithdrawals(mock.Anything, userID).Return([]models.DbWithdrawn{}, nil)
+
+			result, err := service.GetWithdrawals(context.Background(), userID)
+
+			require.NoError(t, err)
+			assert.Empty(t, result)
+		},
+	)
+
+	t.Run(
+		"Multiple withdrawals successful retrieval", func(t *testing.T) {
+			setup(t)
+
+			withdrawals := []models.DbWithdrawn{
+				{Sum: 10.0, Order: "12345678903", UserID: userID, ProcessedAt: processedTime},
+				{Sum: 20.0, Order: "98765432107", UserID: userID, ProcessedAt: processedTime},
+			}
+
+			mockRepository.EXPECT().GetWithdrawals(mock.Anything, userID).Return(withdrawals, nil)
+
+			result, err := service.GetWithdrawals(context.Background(), userID)
+
+			require.NoError(t, err)
+			assert.Len(t, result, 2)
+			assert.Equal(t, 10.0, result[0].Sum)
+			assert.Equal(t, "12345678903", result[0].Order)
+		},
+	)
+
+	t.Run(
+		"Database error on withdrawals list", func(t *testing.T) {
+			setup(t)
+
+			testError := assert.AnError
+			mockRepository.EXPECT().GetWithdrawals(mock.Anything, userID).Return(nil, testError)
+
+			result, err := service.GetWithdrawals(context.Background(), userID)
+
+			require.Error(t, err)
+			assert.Nil(t, result)
+		},
+	)
 }
