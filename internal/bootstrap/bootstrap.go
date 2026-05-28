@@ -39,7 +39,7 @@ func Bootstrap(
 	if err != nil {
 		return err
 	}
-	lSvc, err := loyaltySvc.New(logger, cfg, &http.Client{})
+	lSvc, err := loyaltySvc.New(logger, cfg, &http.Client{Timeout: 10 * time.Second})
 	if err != nil {
 		return err
 	}

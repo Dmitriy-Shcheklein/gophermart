@@ -72,6 +72,7 @@ func (r *Repository) Withdraw(ctx context.Context, balance models.DbBalance, wit
 }
 
 func (r *Repository) GetUserBalance(ctx context.Context, userID int) (models.DbBalance, error) {
+	r.logger.Debug().Int("userID", userID).Msg("GetUserBalance")
 	query := "select id, current, withdrawn, user_id from balances where user_id = $1"
 
 	row := r.pool.QueryRow(ctx, query, userID)
@@ -81,6 +82,7 @@ func (r *Repository) GetUserBalance(ctx context.Context, userID int) (models.DbB
 	); err != nil {
 		return models.DbBalance{}, err
 	}
+	r.logger.Debug().Interface("result", result).Msg("GetUserBalance - result")
 	return result, nil
 }
 
