@@ -28,7 +28,9 @@ func main() {
 	}
 	logger := zerolog.New(os.Stdout).Level(zerolog.DebugLevel)
 
-	logger.Info().Str("serverAddress", cfg.GetSrvAddr()).Str("DSN", cfg.DbDsn()).Msg("config data")
+	logger.Info().Str("serverAddress", cfg.GetSrvAddr()).Str("DSN", cfg.DbDsn()).Str(
+		"accrualAddr", cfg.GetAccrualSrvAddr(),
+	).Msg("config data")
 
 	appMiddlewares, err := middlewares.New(&logger)
 	if err != nil {

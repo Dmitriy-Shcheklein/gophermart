@@ -76,7 +76,7 @@ func Bootstrap(
 	router.Route(
 		"/api/user/withdrawals", func(r chi.Router) {
 			r.Use(mw.Auth)
-			r.Post("/", oHandler.GetWithdrawals)
+			r.Get("/", oHandler.GetWithdrawals)
 		},
 	)
 
