@@ -15,6 +15,7 @@ type Service interface {
 	GetList(ctx context.Context, userID int) ([]models.RequestOrder, error)
 	Withdraw(ctx context.Context, userID int, sum float64, orderNum string) error
 	GetBalance(ctx context.Context, userID int) (models.ResponseBalance, error)
+	GetWithdrawals(ctx context.Context, userID int) ([]models.ResponseWithdrawn, error)
 }
 
 type AuthService interface {

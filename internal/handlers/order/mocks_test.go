@@ -172,6 +172,74 @@ func (_c *MockService_GetList_Call) RunAndReturn(run func(ctx context.Context, u
 	return _c
 }
 
+// GetWithdrawals provides a mock function for the type MockService
+func (_mock *MockService) GetWithdrawals(ctx context.Context, userID int) ([]models.ResponseWithdrawn, error) {
+	ret := _mock.Called(ctx, userID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetWithdrawals")
+	}
+
+	var r0 []models.ResponseWithdrawn
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, int) ([]models.ResponseWithdrawn, error)); ok {
+		return returnFunc(ctx, userID)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, int) []models.ResponseWithdrawn); ok {
+		r0 = returnFunc(ctx, userID)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]models.ResponseWithdrawn)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, int) error); ok {
+		r1 = returnFunc(ctx, userID)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockService_GetWithdrawals_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetWithdrawals'
+type MockService_GetWithdrawals_Call struct {
+	*mock.Call
+}
+
+// GetWithdrawals is a helper method to define mock.On call
+//   - ctx context.Context
+//   - userID int
+func (_e *MockService_Expecter) GetWithdrawals(ctx interface{}, userID interface{}) *MockService_GetWithdrawals_Call {
+	return &MockService_GetWithdrawals_Call{Call: _e.mock.On("GetWithdrawals", ctx, userID)}
+}
+
+func (_c *MockService_GetWithdrawals_Call) Run(run func(ctx context.Context, userID int)) *MockService_GetWithdrawals_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 int
+		if args[1] != nil {
+			arg1 = args[1].(int)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockService_GetWithdrawals_Call) Return(responseWithdrawns []models.ResponseWithdrawn, err error) *MockService_GetWithdrawals_Call {
+	_c.Call.Return(responseWithdrawns, err)
+	return _c
+}
+
+func (_c *MockService_GetWithdrawals_Call) RunAndReturn(run func(ctx context.Context, userID int) ([]models.ResponseWithdrawn, error)) *MockService_GetWithdrawals_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Upload provides a mock function for the type MockService
 func (_mock *MockService) Upload(ctx context.Context, userID int, orderNum string) error {
 	ret := _mock.Called(ctx, userID, orderNum)

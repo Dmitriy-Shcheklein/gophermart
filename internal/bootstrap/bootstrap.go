@@ -73,6 +73,12 @@ func Bootstrap(
 			r.Get("/", oHandler.GetBalance)
 		},
 	)
+	router.Route(
+		"/api/user/withdrawals", func(r chi.Router) {
+			r.Use(mw.Auth)
+			r.Post("/", oHandler.GetWithdrawals)
+		},
+	)
 
 	worker.Start(ctx, 1*time.Second)
 

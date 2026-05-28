@@ -35,7 +35,8 @@ create table if not exists withdrawns
     id serial primary key,
     sum numeric(1000, 2) not null,
     order_num varchar(255) not null,
-    user_id integer not null
+    user_id integer not null,
+    processed_at timestamp default current_timestamp
     );
 
 create index if not exists idx_withdrawns_user_id on withdrawns(user_id);

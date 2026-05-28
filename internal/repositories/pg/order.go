@@ -106,3 +106,17 @@ func (r *Repository) UpdateOrder(ctx context.Context, order models.DbOrder) erro
 	}
 	return nil
 }
+
+func (r *Repository) GetWithdrawals(ctx context.Context, userID int) ([]models.DbWithdrawn, error) {
+	query := "select id, sum, order_num, user_id, processed_at from withdrawns where user_id = $1 order by processed_at desc"
+
+	rows, err := r.pool.Query(ctx, query, userID)
+	if err != nil {
+		return nil, err
+	}
+	orders, err := pgx.CollectRows(rows, pgx.RowToStructByNameLax[models.DbWithdrawn])
+	if err != nil {
+		return nil, err
+	}
+	return orders, nil
+}

@@ -20,7 +20,7 @@ func (h *Handler) Withdraw(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
-	var body models.RequestWithdraw
+	var body models.RequestWithdrawn
 	if err = json.NewDecoder(r.Body).Decode(&body); err != nil {
 		http.Error(w, domainErrors.DecodeBodyErrMsg, http.StatusBadRequest)
 		return

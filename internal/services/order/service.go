@@ -17,6 +17,7 @@ type Repository interface {
 	Withdraw(ctx context.Context, balance models.DbBalance, withdrawn models.DbWithdrawn) error
 	GetProcessingOrders(ctx context.Context) ([]models.DbOrder, error)
 	UpdateOrder(ctx context.Context, order models.DbOrder) error
+	GetWithdrawals(ctx context.Context, userID int) ([]models.DbWithdrawn, error)
 }
 
 type LoyaltyService interface {
