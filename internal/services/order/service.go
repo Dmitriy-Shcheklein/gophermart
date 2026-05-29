@@ -4,6 +4,7 @@ package order
 import (
 	"context"
 	"fmt"
+	"iter"
 
 	"github.com/Dmitriy-Shcheklein/gophermart/internal/errors"
 	"github.com/Dmitriy-Shcheklein/gophermart/internal/models"
@@ -17,7 +18,7 @@ type Repository interface {
 	GetByUserId(ctx context.Context, userID int) ([]models.DbOrder, error)
 	GetUserBalance(ctx context.Context, useID int) (models.DbBalance, error)
 	Withdraw(ctx context.Context, balance models.DbBalance, withdrawn models.DbWithdrawn) error
-	GetProcessingOrders(ctx context.Context) ([]models.DbOrder, error)
+	GetProcessingOrders(ctx context.Context) iter.Seq[models.DbOrder]
 	UpdateOrder(ctx context.Context, order models.DbOrder) error
 	GetWithdrawals(ctx context.Context, userID int) ([]models.DbWithdrawn, error)
 }

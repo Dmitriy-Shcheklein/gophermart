@@ -3,6 +3,7 @@ package postgres
 import (
 	"context"
 	"fmt"
+	"iter"
 
 	"github.com/Dmitriy-Shcheklein/gophermart/internal/models"
 	"github.com/jackc/pgx/v5"
@@ -91,18 +92,25 @@ func (r *Repository) GetUserBalance(ctx context.Context, userID int) (models.DbB
 	return result, nil
 }
 
-// GetProcessingOrders метод получения заказов для обработки
-func (r *Repository) GetProcessingOrders(ctx context.Context) ([]models.DbOrder, error) {
-	query := "select id, status, uploaded_at, accrual, number from orders where status != 'INVALID' and status != 'PROCESSED'"
-	rows, err := r.pool.Query(ctx, query)
-	if err != nil {
-		return nil, err
+// GetProcessingOrders метод получения заказов для обработки, возвращает итератор
+func (r *Repository) GetProcessingOrders(ctx context.Context) iter.Seq[models.DbOrder] {
+	return func(yield func(models.DbOrder) bool) {
+		query := "select id, status, uploaded_at, accrual, number from orders where status != 'INVALID' and status != 'PROCESSED'"
+		rows, err := r.pool.Query(ctx, query)
+		if err != nil {
+			return
+		}
+		for rows.Next() {
+			var order models.DbOrder
+			if err = rows.Scan(&order.ID, &order.Status, &order.UploadedAt, &order.Accrual, &order.Number); err != nil {
+				r.logger.Error().Err(err).Msg("error while scan row")
+				return
+			}
+			if !yield(order) {
+				return
+			}
+		}
 	}
-	orders, err := pgx.CollectRows(rows, pgx.RowToStructByNameLax[models.DbOrder])
-	if err != nil {
-		return nil, err
-	}
-	return orders, nil
 }
 
 // UpdateOrder метод обновления заказа

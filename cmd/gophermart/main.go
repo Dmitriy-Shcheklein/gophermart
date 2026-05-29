@@ -32,7 +32,7 @@ func main() {
 		"accrualAddr", cfg.GetAccrualSrvAddr(),
 	).Msg("config data")
 
-	appMiddlewares, err := middlewares.New(&logger)
+	appMiddlewares, err := middlewares.New(&logger, cfg)
 	if err != nil {
 		log.Fatalf("error while create appMiddlewares: %v\n", err)
 	}

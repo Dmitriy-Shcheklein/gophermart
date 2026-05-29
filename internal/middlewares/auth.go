@@ -11,8 +11,6 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
-var secretKey = user.SecretKey
-
 type claims = user.Claims
 
 type token string
@@ -30,7 +28,7 @@ func (m *Middleware) Auth(h http.Handler) http.Handler {
 				http.Error(w, "unauthorized", http.StatusUnauthorized)
 				return
 			}
-			withCtx, err := verifyToken(r, jwtToken)
+			withCtx, err := m.verifyToken(r, jwtToken)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusUnauthorized)
 				return
@@ -40,7 +38,7 @@ func (m *Middleware) Auth(h http.Handler) http.Handler {
 	)
 }
 
-func verifyToken(r *http.Request, jwtToken string) (*http.Request, error) {
+func (m *Middleware) verifyToken(r *http.Request, jwtToken string) (*http.Request, error) {
 	parts := strings.Split(jwtToken, ".")
 	if len(parts) != 3 {
 		return r, fmt.Errorf("%w: invalid token format", errInvalidUserFormat)
@@ -49,7 +47,7 @@ func verifyToken(r *http.Request, jwtToken string) (*http.Request, error) {
 	currClaims := claims{}
 	if _, err := jwt.ParseWithClaims(
 		jwtToken, &currClaims, func(t *jwt.Token) (interface{}, error) {
-			return secretKey, nil
+			return m.cfg.GetSalt(), nil
 		},
 	); err != nil {
 		return r, err

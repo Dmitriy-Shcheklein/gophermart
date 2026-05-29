@@ -19,6 +19,7 @@ func TestService_Auth(t *testing.T) {
 		logger         *zerolog.Logger
 		user           models.DbUser
 		password       string
+		mockCfg        *MockConfig
 
 		service *Service
 	)
@@ -27,11 +28,12 @@ func TestService_Auth(t *testing.T) {
 		mockRepository = NewMockRepository(t)
 		nopLogger := zerolog.Nop()
 		logger = &nopLogger
+		mockCfg = NewMockConfig(t)
 
 		password, _ = hashPassword("pass")
 		user = models.DbUser{ID: 1, Login: "login", Password: password, CreatedAt: time.Now()}
 
-		service, _ = New(logger, mockRepository)
+		service, _ = New(logger, mockRepository, mockCfg)
 	}
 
 	t.Run(
@@ -39,6 +41,7 @@ func TestService_Auth(t *testing.T) {
 			setup(t)
 
 			mockRepository.EXPECT().GetUserByLogin(mock.Anything, "login").Return(&user, nil)
+			mockCfg.EXPECT().GetSalt().Return([]byte("salt"))
 
 			jwt, err := service.Auth(context.Background(), "login", "pass")
 
@@ -92,9 +95,9 @@ func TestService_Auth(t *testing.T) {
 		"Database connection error", func(t *testing.T) {
 			setup(t)
 
-			mockRepository.EXPECT().GetUserByLogin(mock.Anything, "testuser").Return(nil, assert.AnError)
+			mockRepository.EXPECT().GetUserByLogin(mock.Anything, "testUser").Return(nil, assert.AnError)
 
-			_, err := service.Auth(context.Background(), "testuser", "password")
+			_, err := service.Auth(context.Background(), "testUser", "password")
 
 			require.Error(t, err)
 			assert.Equal(t, assert.AnError, err)

@@ -17,21 +17,30 @@ type Repository interface {
 	GetUserByLogin(ctx context.Context, login string) (*models.DbUser, error)
 }
 
+// Config интерфейс описывающий конфигурацию приложения
+type Config interface {
+	GetSalt() []byte
+}
+
 // Service структура сервиса
 type Service struct {
 	logger     *zerolog.Logger
 	repository Repository
+	cfg        Config
 }
 
 // New конструктор сервиса
-func New(logger *zerolog.Logger, repository Repository) (*Service, error) {
+func New(logger *zerolog.Logger, repository Repository, cfg Config) (*Service, error) {
 	if logger == nil {
 		return nil, fmt.Errorf("%w: logger", errors.ErrEmptyDep)
 	}
 	if repository == nil {
 		return nil, fmt.Errorf("%w: repository", errors.ErrEmptyDep)
 	}
-	return &Service{logger: logger, repository: repository}, nil
+	if cfg == nil {
+		return nil, fmt.Errorf("%w: config", errors.ErrEmptyDep)
+	}
+	return &Service{logger: logger, repository: repository, cfg: cfg}, nil
 }
 
 func hashPassword(password string) (string, error) {

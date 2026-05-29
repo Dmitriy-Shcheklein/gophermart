@@ -22,5 +22,5 @@ func (s *Service) Register(ctx context.Context, login, password string) (string,
 		}
 		return "", err
 	}
-	return BuildJWTString(dbUSer)
+	return BuildJWTString(dbUSer, s.cfg.GetSalt())
 }

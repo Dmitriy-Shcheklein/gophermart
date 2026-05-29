@@ -20,6 +20,7 @@ func TestService_Register(t *testing.T) {
 		mockRepository *MockRepository
 		logger         *zerolog.Logger
 		user           models.DbUser
+		mockCfg        *MockConfig
 
 		service *Service
 	)
@@ -29,14 +30,16 @@ func TestService_Register(t *testing.T) {
 		nopLogger := zerolog.Nop()
 		logger = &nopLogger
 		user = models.DbUser{ID: 1, Login: "login", Password: "pass", CreatedAt: time.Now()}
+		mockCfg = NewMockConfig(t)
 
-		service, _ = New(logger, mockRepository)
+		service, _ = New(logger, mockRepository, mockCfg)
 	}
 
 	t.Run(
 		"Successfully", func(t *testing.T) {
 			setup(t)
 
+			mockCfg.EXPECT().GetSalt().Return([]byte("salt"))
 			mockRepository.EXPECT().CreateUser(
 				mock.Anything, "login", mock.MatchedBy(
 					func(hashed string) bool {
@@ -90,7 +93,7 @@ func TestService_Register(t *testing.T) {
 			mockRepository.EXPECT().CreateUser(mock.Anything, mock.Anything, mock.Anything, mock.Anything).
 				Return(user, &pgconn.PgError{Code: "23505"})
 
-			_, err := service.Register(context.Background(), "existinguser", "password")
+			_, err := service.Register(context.Background(), "existingUser", "password")
 
 			require.Error(t, err)
 		},
@@ -103,7 +106,7 @@ func TestService_Register(t *testing.T) {
 			mockRepository.EXPECT().CreateUser(mock.Anything, mock.Anything, mock.Anything, mock.Anything).
 				Return(user, assert.AnError)
 
-			_, err := service.Register(context.Background(), "testuser", "password")
+			_, err := service.Register(context.Background(), "testUser", "password")
 
 			require.Error(t, err)
 			assert.Equal(t, assert.AnError, err)

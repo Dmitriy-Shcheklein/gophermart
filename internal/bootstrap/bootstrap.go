@@ -33,7 +33,7 @@ func Bootstrap(
 	if err != nil {
 		return err
 	}
-	uSvc, err := userSvc.New(logger, repository)
+	uSvc, err := userSvc.New(logger, repository, cfg)
 	if err != nil {
 		return err
 	}

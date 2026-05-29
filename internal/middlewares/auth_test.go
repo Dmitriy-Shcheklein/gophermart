@@ -20,6 +20,8 @@ func TestMiddleware_Auth(t *testing.T) {
 		w           *httptest.ResponseRecorder
 		user        models.DbUser
 		jwtString   string
+		mockCfg     *MockConfig
+		salt        []byte
 
 		mw *Middleware
 	)
@@ -39,11 +41,13 @@ func TestMiddleware_Auth(t *testing.T) {
 			Password:  "pass",
 			CreatedAt: time.Now(),
 		}
-		jwtStr, err := userSvc.BuildJWTString(user)
+		salt = []byte("salt")
+		jwtStr, err := userSvc.BuildJWTString(user, salt)
 		require.NoError(t, err)
 		jwtString = jwtStr
+		mockCfg = NewMockConfig(t)
 
-		mw, _ = New(&logger)
+		mw, _ = New(&logger, mockCfg)
 	}
 
 	t.Run(
@@ -52,6 +56,8 @@ func TestMiddleware_Auth(t *testing.T) {
 
 			r = httptest.NewRequest(http.MethodPost, "/", nil)
 			r.Header.Set("Authorization", jwtString)
+
+			mockCfg.EXPECT().GetSalt().Return(salt)
 
 			handler := mw.Auth(nextHandler)
 			handler.ServeHTTP(w, r)

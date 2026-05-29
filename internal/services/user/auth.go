@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	domainErrors "github.com/Dmitriy-Shcheklein/gophermart/internal/errors"
@@ -19,9 +20,6 @@ type Claims struct {
 
 var tokenExp = time.Hour
 
-// SecretKey ключ подписи
-var SecretKey = []byte("secret_key")
-
 // Auth авторизация пользователя
 func (s *Service) Auth(ctx context.Context, login string, password string) (string, error) {
 	user, err := s.repository.GetUserByLogin(ctx, login)
@@ -33,7 +31,11 @@ func (s *Service) Auth(ctx context.Context, login string, password string) (stri
 		return "", domainErrors.ErrInvalidAuthData
 	}
 
-	jwtString, err := BuildJWTString(*user)
+	salt := s.cfg.GetSalt()
+	fmt.Println(1)
+	jwtString, err := BuildJWTString(*user, salt)
+	fmt.Println(2, jwtString)
+	fmt.Println(3, err)
 	if err != nil {
 		return "", err
 	}
@@ -41,7 +43,7 @@ func (s *Service) Auth(ctx context.Context, login string, password string) (stri
 }
 
 // BuildJWTString функция получения строкового токена пользователя
-func BuildJWTString(user models.DbUser) (string, error) {
+func BuildJWTString(user models.DbUser, salt []byte) (string, error) {
 	token := jwt.NewWithClaims(
 		jwt.SigningMethodHS256, Claims{
 			RegisteredClaims: jwt.RegisteredClaims{
@@ -52,7 +54,7 @@ func BuildJWTString(user models.DbUser) (string, error) {
 		},
 	)
 
-	tokenString, err := token.SignedString(SecretKey)
+	tokenString, err := token.SignedString(salt)
 	if err != nil {
 		return "", err
 	}

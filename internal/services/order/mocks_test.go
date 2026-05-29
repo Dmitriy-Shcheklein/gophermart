@@ -6,6 +6,7 @@ package order
 
 import (
 	"context"
+	"iter"
 
 	"github.com/Dmitriy-Shcheklein/gophermart/internal/models"
 	mock "github.com/stretchr/testify/mock"
@@ -236,31 +237,22 @@ func (_c *MockRepository_GetOrderByNum_Call) RunAndReturn(run func(ctx context.C
 }
 
 // GetProcessingOrders provides a mock function for the type MockRepository
-func (_mock *MockRepository) GetProcessingOrders(ctx context.Context) ([]models.DbOrder, error) {
+func (_mock *MockRepository) GetProcessingOrders(ctx context.Context) iter.Seq[models.DbOrder] {
 	ret := _mock.Called(ctx)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetProcessingOrders")
 	}
 
-	var r0 []models.DbOrder
-	var r1 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context) ([]models.DbOrder, error)); ok {
-		return returnFunc(ctx)
-	}
-	if returnFunc, ok := ret.Get(0).(func(context.Context) []models.DbOrder); ok {
+	var r0 iter.Seq[models.DbOrder]
+	if returnFunc, ok := ret.Get(0).(func(context.Context) iter.Seq[models.DbOrder]); ok {
 		r0 = returnFunc(ctx)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]models.DbOrder)
+			r0 = ret.Get(0).(iter.Seq[models.DbOrder])
 		}
 	}
-	if returnFunc, ok := ret.Get(1).(func(context.Context) error); ok {
-		r1 = returnFunc(ctx)
-	} else {
-		r1 = ret.Error(1)
-	}
-	return r0, r1
+	return r0
 }
 
 // MockRepository_GetProcessingOrders_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetProcessingOrders'
@@ -287,12 +279,12 @@ func (_c *MockRepository_GetProcessingOrders_Call) Run(run func(ctx context.Cont
 	return _c
 }
 
-func (_c *MockRepository_GetProcessingOrders_Call) Return(dbOrders []models.DbOrder, err error) *MockRepository_GetProcessingOrders_Call {
-	_c.Call.Return(dbOrders, err)
+func (_c *MockRepository_GetProcessingOrders_Call) Return(seq iter.Seq[models.DbOrder]) *MockRepository_GetProcessingOrders_Call {
+	_c.Call.Return(seq)
 	return _c
 }
 
-func (_c *MockRepository_GetProcessingOrders_Call) RunAndReturn(run func(ctx context.Context) ([]models.DbOrder, error)) *MockRepository_GetProcessingOrders_Call {
+func (_c *MockRepository_GetProcessingOrders_Call) RunAndReturn(run func(ctx context.Context) iter.Seq[models.DbOrder]) *MockRepository_GetProcessingOrders_Call {
 	_c.Call.Return(run)
 	return _c
 }
