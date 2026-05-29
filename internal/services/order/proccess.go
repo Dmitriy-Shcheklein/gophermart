@@ -5,7 +5,6 @@ import (
 	"sync"
 
 	"github.com/Dmitriy-Shcheklein/gophermart/internal/models"
-	"golang.org/x/sync/errgroup"
 )
 
 // ProcessOrders обработка не рассчитанных заказов
@@ -20,8 +19,6 @@ func (s *Service) ProcessOrders(ctx context.Context) error {
 		models.Processing: models.ProcessingOrder,
 		models.Processed:  models.ProcessedOrder,
 	}
-
-	errGroup := errgroup.Group{}
 
 	wg := sync.WaitGroup{}
 	for i := range orders {
