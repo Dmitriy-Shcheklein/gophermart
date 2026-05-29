@@ -7,15 +7,15 @@ import (
 	"time"
 
 	"github.com/Dmitriy-Shcheklein/gophermart/internal/config"
-	"github.com/Dmitriy-Shcheklein/gophermart/internal/config/pgpool"
 	orderHandler "github.com/Dmitriy-Shcheklein/gophermart/internal/handlers/order"
 	userHandler "github.com/Dmitriy-Shcheklein/gophermart/internal/handlers/user"
+	"github.com/Dmitriy-Shcheklein/gophermart/internal/infrastructure/postgres/pgpool"
 	"github.com/Dmitriy-Shcheklein/gophermart/internal/middlewares"
-	"github.com/Dmitriy-Shcheklein/gophermart/internal/repositories/pg"
+	"github.com/Dmitriy-Shcheklein/gophermart/internal/repositories/postgres"
 	loyaltySvc "github.com/Dmitriy-Shcheklein/gophermart/internal/services/loyalty"
 	orderSvc "github.com/Dmitriy-Shcheklein/gophermart/internal/services/order"
 	userSvc "github.com/Dmitriy-Shcheklein/gophermart/internal/services/user"
-	"github.com/Dmitriy-Shcheklein/gophermart/internal/workers/handle_orders"
+	"github.com/Dmitriy-Shcheklein/gophermart/internal/workers/worker"
 	"github.com/go-chi/chi/v5"
 
 	"github.com/rs/zerolog"
@@ -29,7 +29,7 @@ func Bootstrap(
 	if err != nil {
 		return err
 	}
-	repository, err := pg.New(logger, pool.Pool)
+	repository, err := postgres.New(logger, pool.Pool)
 	if err != nil {
 		return err
 	}
@@ -54,7 +54,7 @@ func Bootstrap(
 	if err != nil {
 		return err
 	}
-	worker, err := handle_orders.New(logger, oSvc)
+	worker, err := worker.New(logger, oSvc)
 	if err != nil {
 		return err
 	}

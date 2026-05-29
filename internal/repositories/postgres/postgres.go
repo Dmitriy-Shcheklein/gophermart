@@ -1,5 +1,5 @@
-// Package pg репозиторий для работы с postgresql
-package pg
+// Package postgres репозиторий для работы с postgresql
+package postgres
 
 import (
 	"fmt"

@@ -1,5 +1,5 @@
-// Package handle_orders пакет который реализует воркер для фоновой обработки статусов заказов
-package handle_orders
+// Package worker пакет, который реализует воркер для фоновой обработки статусов заказов
+package worker
 
 import (
 	"context"

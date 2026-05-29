@@ -1,4 +1,5 @@
-package user
+// Package order содержит обработчики http запросов связанные с обработкой заказов
+package order
 
 import (
 	"context"

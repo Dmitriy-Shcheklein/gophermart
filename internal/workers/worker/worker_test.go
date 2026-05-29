@@ -1,4 +1,4 @@
-package handle_orders
+package worker
 
 import (
 	"context"
